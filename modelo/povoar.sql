@@ -7,6 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema equipe385145
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `equipe385145` ;
 
 -- -----------------------------------------------------
 -- Schema equipe385145
@@ -22,8 +23,8 @@ DROP TABLE IF EXISTS `autor` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `autor` (
-  `nome` VARCHAR(60) NOT NULL,
   `cpf` CHAR(11) NOT NULL,
+  `nome` VARCHAR(60) NOT NULL,
   `nacionalidade` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`cpf`))
 ENGINE = InnoDB;
@@ -203,7 +204,8 @@ CREATE TABLE IF NOT EXISTS `livro` (
     REFERENCES `categoria` (`cod_categoria`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+PACK_KEYS = DEFAULT;
 
 SHOW WARNINGS;
 CREATE INDEX `fk_livro_categoria1_idx` ON `livro` (`cod_categoria` ASC) VISIBLE;
@@ -311,9 +313,9 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `autor` (`nome`, `cpf`, `nacionalidade`) VALUES ('João Antônio', '12345678980', 'Brasileira');
-INSERT INTO `autor` (`nome`, `cpf`, `nacionalidade`) VALUES ('Maria do rosário', '98765432199', 'Brasileira');
-INSERT INTO `autor` (`nome`, `cpf`, `nacionalidade`) VALUES ('Raimundo Antônio', '85296374180', 'Brasileira');
+INSERT INTO `autor` (`cpf`, `nome`, `nacionalidade`) VALUES ('12345678980', 'João Antônio', 'Brasileira');
+INSERT INTO `autor` (`cpf`, `nome`, `nacionalidade`) VALUES ('98765432199', 'Maria do rosário', 'Brasileira');
+INSERT INTO `autor` (`cpf`, `nome`, `nacionalidade`) VALUES ('85296374180', 'Raimundo Antônio', 'Brasileira');
 
 COMMIT;
 
@@ -423,8 +425,8 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `autor_livro` (`autor_cpf`, `livro_isbn`) VALUES ('12345678980', '9781234567890');
-INSERT INTO `autor_livro` (`autor_cpf`, `livro_isbn`) VALUES ('98765432199', '9788529637410');
+INSERT INTO `autor_livro` (`autor_cpf`, `livro_isbn`) VALUES ('12345678980', '9788529637410');
+INSERT INTO `autor_livro` (`autor_cpf`, `livro_isbn`) VALUES ('98765432199', '9781234567800');
 INSERT INTO `autor_livro` (`autor_cpf`, `livro_isbn`) VALUES ('85296374180', '9781234567800');
 
 COMMIT;
@@ -435,9 +437,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (400500, '9781234567890', '2018-04-20');
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (389118, '9781234567890', '2018-03-27');
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (394192 , '9781234567890', '2018-01-01');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (400500, '9788529637410', '2018-04-20');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (389118, '9788529637410', '2018-03-27');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (394192 , '9788529637410', '2000-01-01');
 
 COMMIT;
 

@@ -1,3 +1,6 @@
 *.bak
 .venv/
 venv/
+build
+dist
+*.egg-info

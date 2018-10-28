@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import mysql.connector as mysql_driver
+import hashlib
+
+
+def senha_hash(senha):
+    return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()
 
 
 class Database(object):
@@ -33,13 +38,17 @@ class Database(object):
         return self.first_result(sql, params)
 
     def login(self, nome_usuario, senha):
-        sql = ("SELECT matricula, nickname, senha FROM usuario "
-               "WHERE (nickname=%s OR matricula=%s) AND senha=%s")
-        params = (nome_usuario, nome_usuario, senha)
-        login = self.first_result(sql, params)
-        if not login:
+        sql = ("SELECT matricula, senha_hash FROM usuario "
+               "WHERE (nickname=%s OR matricula=%s)")
+        params = (nome_usuario, nome_usuario)
+        result = self.first_result(sql, params) # None
+        if result is None:
             return None
-        matricula = login['matricula']
+        hash_database = result['senha_hash']  # É O HASH do BANCO!
+        hash_usuario = senha_hash(senha)
+        if hash_database != hash_usuario:
+            return None
+        matricula = result['matricula']
         usuario = self.usuario(matricula)
         return usuario
 

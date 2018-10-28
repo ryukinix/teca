@@ -33,14 +33,9 @@ class Database(object):
         return self.first_result(sql, params)
 
     def login(self, nome_usuario, senha):
-        if nome_usuario.isdecimal():
-            nome_usuario = int(nome_usuario)
-            sql = ("SELECT matricula, nickname, senha FROM usuario "
-                   "WHERE matricula=%s AND senha=%s")
-        else:
-            sql = ("SELECT matricula, nickname, senha FROM usuario "
-                   "WHERE nickname=%s AND senha=%s")
-        params = (nome_usuario, senha)
+        sql = ("SELECT matricula, nickname, senha FROM usuario "
+               "WHERE (nickname=%s OR matricula=%s) AND senha=%s")
+        params = (nome_usuario, nome_usuario, senha)
         login = self.first_result(sql, params)
         if not login:
             return None

@@ -39,14 +39,10 @@ class Database(object):
 
     def login(self, nome_usuario, senha):
         sql = ("SELECT matricula, senha_hash FROM usuario "
-               "WHERE (nickname=%s OR matricula=%s)")
-        params = (nome_usuario, nome_usuario)
-        result = self.first_result(sql, params) # None
+               "WHERE (nickname=%s OR matricula=%s) and senha_hash=%s")
+        params = (nome_usuario, nome_usuario, senha_hash(senha))
+        result = self.first_result(sql, params)
         if result is None:
-            return None
-        hash_database = result['senha_hash']  # É O HASH do BANCO!
-        hash_usuario = senha_hash(senha)
-        if hash_database != hash_usuario:
             return None
         matricula = result['matricula']
         usuario = self.usuario(matricula)

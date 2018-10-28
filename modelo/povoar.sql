@@ -82,13 +82,13 @@ CREATE TABLE IF NOT EXISTS `aluno` (
   CONSTRAINT `fk_aluno_usuario`
     FOREIGN KEY (`matricula`)
     REFERENCES `usuario` (`matricula`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_aluno_curso1`
     FOREIGN KEY (`cod_curso`)
     REFERENCES `curso` (`cod_curso`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -114,13 +114,13 @@ CREATE TABLE IF NOT EXISTS `professor` (
   CONSTRAINT `fk_professor_usuario1`
     FOREIGN KEY (`mat_siape`)
     REFERENCES `usuario` (`matricula`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_professor_curso1`
     FOREIGN KEY (`cod_curso`)
     REFERENCES `curso` (`cod_curso`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -143,8 +143,8 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   CONSTRAINT `fk_funcionario_usuario1`
     FOREIGN KEY (`matricula`)
     REFERENCES `usuario` (`matricula`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -165,8 +165,8 @@ CREATE TABLE IF NOT EXISTS `telefones` (
   CONSTRAINT `fk_telefones_usuario1`
     FOREIGN KEY (`matricula`)
     REFERENCES `usuario` (`matricula`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `livro` (
     FOREIGN KEY (`cod_categoria`)
     REFERENCES `categoria` (`cod_categoria`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 PACK_KEYS = DEFAULT;
 
@@ -225,13 +225,13 @@ CREATE TABLE IF NOT EXISTS `autor_livro` (
   CONSTRAINT `fk_autor_has_livro_autor1`
     FOREIGN KEY (`autor_cpf`)
     REFERENCES `autor` (`cpf`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_autor_has_livro_livro1`
     FOREIGN KEY (`livro_isbn`)
     REFERENCES `livro` (`isbn`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -262,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `emprestimo` (
     FOREIGN KEY (`isbn`)
     REFERENCES `livro` (`isbn`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -287,13 +287,13 @@ CREATE TABLE IF NOT EXISTS `reserva` (
   CONSTRAINT `fk_usuario_has_livro_usuario2`
     FOREIGN KEY (`matricula`)
     REFERENCES `usuario` (`matricula`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_usuario_has_livro_livro2`
     FOREIGN KEY (`isbn`)
     REFERENCES `livro` (`isbn`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;

@@ -40,7 +40,7 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `usuario` (
   `matricula` INT NOT NULL,
   `nickname` VARCHAR(45) NULL,
-  `senha` CHAR(64) NOT NULL,
+  `senha_hash` CHAR(64) NOT NULL,
   `nome` VARCHAR(100) NOT NULL,
   `endereco` VARCHAR(100) NOT NULL,
   `tipo` ENUM('aluno', 'professor', 'funcionario') NOT NULL,
@@ -251,7 +251,8 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `emprestimo` (
   `matricula` INT NOT NULL,
   `isbn` CHAR(13) NOT NULL,
-  `data_de_emprestimo` DATETIME NOT NULL,
+  `data_de_emprestimo` DATE NOT NULL,
+  `data_de_devolucao` DATE NOT NULL,
   PRIMARY KEY (`matricula`, `isbn`),
   CONSTRAINT `fk_usuario_has_livro_usuario1`
     FOREIGN KEY (`matricula`)
@@ -325,13 +326,13 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (389118, NULL, '1234', 'Samuel Hericles', 'Rua 22 de novembro - 678 - Marco', 'aluno', 'usuario');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (394192, NULL, '0101', 'Manoel Vilela', 'Rua São José - 563 - Sobral', 'aluno', 'usuario');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (385145, NULL, '8921', 'Gerônimo Aguiar', 'Rua Não sei - s/N - Itarema', 'aluno', 'usuario');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400100, 'Admin', 'root', 'Fernando', 'Rua dos Professores - s/N - Sobral', 'professor', 'administrador');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (300300, NULL, '0000', 'Germano', 'Rua dos Funcionarios', 'funcionario', 'bibliotecario');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400500, NULL, '0000', 'Marcelo', 'Rua dos Professores - S/N - Sobral', 'professor', 'usuario');
-INSERT INTO `usuario` (`matricula`, `nickname`, `senha`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400101, NULL, '0000', 'Francisco', 'Rua dos Professores', 'professor', 'usuario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (389118, NULL, '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'Samuel Hericles', 'Rua 22 de novembro - 678 - Marco', 'aluno', 'usuario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (394192, NULL, '07334386287751ba02a4588c1a0875dbd074a61bd9e6ab7c48d244eacd0c99e0', 'Manoel Vilela', 'Rua São José - 563 - Sobral', 'aluno', 'usuario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (385145, NULL, 'b1b9cbe9a6cf14eb105634eda9edd603fd35f77a8b5a3491db35524866eba532', 'Gerônimo Aguiar', 'Rua Não sei - s/N - Itarema', 'aluno', 'usuario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400100, 'Admin', '4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2', 'Fernando', 'Rua dos Professores - s/N - Sobral', 'professor', 'administrador');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (300300, NULL, '9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0', 'Germano', 'Rua dos Funcionarios', 'funcionario', 'bibliotecario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400500, NULL, '9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0', 'Marcelo', 'Rua dos Professores - S/N - Sobral', 'professor', 'usuario');
+INSERT INTO `usuario` (`matricula`, `nickname`, `senha_hash`, `nome`, `endereco`, `tipo`, `permissao`) VALUES (400101, NULL, '9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0', 'Francisco', 'Rua dos Professores', 'professor', 'usuario');
 
 COMMIT;
 
@@ -437,9 +438,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (400500, '9788529637410', '2018-04-20');
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (389118, '9788529637410', '2018-03-27');
-INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`) VALUES (394192 , '9788529637410', '2000-01-01');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`, `data_de_devolucao`) VALUES (400500, '9788529637410', '2018-04-01', '2018-05-01');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`, `data_de_devolucao`) VALUES (389118, '9788529637410', '2018-03-01', '2018-03-16');
+INSERT INTO `emprestimo` (`matricula`, `isbn`, `data_de_emprestimo`, `data_de_devolucao`) VALUES (394192 , '9788529637410', '2000-01-01', '2000-01-16');
 
 COMMIT;
 

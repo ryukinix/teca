@@ -180,6 +180,9 @@ class Usuario(Tabela):
                 'nome', 'endereco', 'tipo', 'permissao']
     _primary_key = ['matricula']
 
+    def mudar_senha(self, nova_senha):
+        self.senha_hash = senha_hash(nova_senha)
+
     @property
     def extra(self):
         if self.tipo == 'aluno':

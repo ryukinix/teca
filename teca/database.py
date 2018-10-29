@@ -82,6 +82,13 @@ class Tabela(metaclass=abc.ABCMeta):
     _columns = []
 
     def __init__(self, *args):
+        expects = len(self._columns)
+        got = len(args)
+        if expects != got:
+            cls = self.__class__.__name__
+            a = self._columns
+            err = f'{cls} expects {expects} arguments, got {got}. Args: {a!r}'
+            raise TypeError(err)
         for k, v in zip(self._columns, args):
             setattr(self, k, v)
 

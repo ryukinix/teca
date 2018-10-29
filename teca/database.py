@@ -172,7 +172,8 @@ class Usuario(Tabela):
                 'nome', 'endereco', 'tipo', 'permissao']
     _primary_key = ['matricula']
 
-    def especializado(self):
+    @property
+    def extra(self):
         if self.tipo == 'aluno':
             return Aluno.select(self.matricula)
         elif self.tipo == 'professor':
@@ -180,8 +181,18 @@ class Usuario(Tabela):
         elif self.tipo == 'funcionario':
             return Funcionario.select(self.matricula)
 
+    @property
     def telefones(self):
         return Telefones.filter(self.matricula)
+
+    @property
+    def emprestimos(self):
+        return Emprestimo.filter(self.matricula)
+
+    @property
+    def reservas(self):
+        return Reserva.filter(self.matricula)
+
 
 class Aluno(Tabela):
     _table = 'aluno'

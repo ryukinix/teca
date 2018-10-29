@@ -187,12 +187,13 @@ class Professor(Tabela):
     _table = 'professor'
     _columns = ['mat_siape', 'data_de_contratacao', 'regime_trabalho',
                 'cod_curso']
-    _primary_key = ['matricula']
+    _primary_key = ['mat_siape']
 
 
 class Funcionario(Tabela):
     _table = 'funcionario'
     _columns = ['matricula']
+    _primary_key = ['matricula']
 
 
 class Livro(Tabela):
@@ -240,7 +241,7 @@ class Curso(Tabela):
 class Categoria(Tabela):
     _table = 'categoria'
     _columns = ['cod_categoria', 'descricao']
-    _columns = ['cod_categoria']
+    _primary_key = ['cod_categoria']
 
 
 def senha_hash(senha):

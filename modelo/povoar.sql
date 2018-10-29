@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `aluno` ;
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `aluno` (
   `matricula` INT NOT NULL,
-  `data_de_conlusao_prevista` DATE NOT NULL,
+  `data_de_conclusao_prevista` DATE NOT NULL,
   `data_de_ingresso` DATE NOT NULL,
   `cod_curso` INT NOT NULL,
   PRIMARY KEY (`matricula`),
@@ -356,9 +356,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `equipe385145`;
-INSERT INTO `aluno` (`matricula`, `data_de_conlusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (389118, '2021-01-01', '2016-07-01', 001);
-INSERT INTO `aluno` (`matricula`, `data_de_conlusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (385145, '2021-01-01', '2016-08-02', 001);
-INSERT INTO `aluno` (`matricula`, `data_de_conlusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (394192, '2021-01-01', '2016-08-16', 002);
+INSERT INTO `aluno` (`matricula`, `data_de_conclusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (389118, '2021-01-01', '2016-07-01', 001);
+INSERT INTO `aluno` (`matricula`, `data_de_conclusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (385145, '2021-01-01', '2016-08-02', 001);
+INSERT INTO `aluno` (`matricula`, `data_de_conclusao_prevista`, `data_de_ingresso`, `cod_curso`) VALUES (394192, '2021-01-01', '2016-08-16', 002);
 
 COMMIT;
 

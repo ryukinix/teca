@@ -54,7 +54,8 @@ class Database(object):
             cursor.execute(sql, params)
             status = self.conn.commit()
         except Exception as e:
-            print("Warning: Exception occured:  ", e)
+            err_name = e.__class__.__name__
+            print(f"Warning: Database.commit: {err_name}: {e}")
             status = self.conn.rollback()
 
         return status
@@ -78,8 +79,10 @@ class Tabela(metaclass=abc.ABCMeta):
     atualização.
     """
 
+    # Para serem redefinidas quando a herença for feita
     _table = None
     _columns = []
+    _primary_key = []
 
     def __init__(self, *args):
         expects = len(self._columns)

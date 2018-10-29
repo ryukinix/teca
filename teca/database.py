@@ -290,6 +290,10 @@ class Categoria(Tabela):
     _columns = ['cod_categoria', 'descricao']
     _primary_key = ['cod_categoria']
 
+    @property
+    def livros(self):
+        return Livro.filter(cod_categoria=self.cod_categoria)
+
 
 def senha_hash(senha):
     return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()

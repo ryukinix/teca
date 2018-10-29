@@ -200,6 +200,13 @@ class Aluno(Tabela):
                 'data_de_ingresso', 'cod_curso']
     _primary_key = ['matricula']
 
+    @property
+    def usuario(self):
+        return Usuario.select(self.matricula)
+
+    @property
+    def nome_curso(self):
+        return Curso.select(self.cod_curso).nome_curso
 
 class Professor(Tabela):
     _table = 'professor'
@@ -207,17 +214,39 @@ class Professor(Tabela):
                 'cod_curso']
     _primary_key = ['mat_siape']
 
+    @property
+    def usuario(self):
+        return Usuario.select(self.mat_siape)
+
+    @property
+    def nome_curso(self):
+        return Curso.select(self.cod_curso).nome_curso
+
 
 class Funcionario(Tabela):
     _table = 'funcionario'
     _columns = ['matricula']
     _primary_key = ['matricula']
 
+    @property
+    def usuario(self):
+        return Usuario.select(self.matricula)
+
 
 class Livro(Tabela):
     _table = 'livro'
-    _columns = ['isbn', 'titulo', 'ano', 'editora', 'qt_copias']
+    _columns = ['isbn', 'titulo', 'ano', 'editora', 'qt_copias', 'cod_categoria']
     _primary_key = ['isbn']
+
+    @property
+    def autores(self):
+        autor_livro = AutorLivro.filter(livro_isbn=self.isbn)
+        return list(map(lambda x: Autor.select(x.autor_cpf), autor_livro))
+
+    @property
+    def categoria(self):
+        cat = Categoria.select(self.cod_categoria)
+        return cat.descricao
 
 
 class Reserva(Tabela):

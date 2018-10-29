@@ -162,8 +162,16 @@ class Tabela(metaclass=abc.ABCMeta):
         return conn.commit(sql, primary_key_value)
 
     def update(self):
-        raise NotImplementedError
-
+        conn = Database.connect()
+        table = self._table
+        columns, values = zip(*self.items())
+        primary_key = self._primary_key
+        primary_key_value = tuple(getattr(self, k) for k in primary_key)
+        set_stmt = ", ".join(map("{}=%s".format, columns))
+        where = " AND ".join(map("{}=%s".format, primary_key))
+        sql = f'UPDATE {table} SET {set_stmt} WHERE {where}'
+        params = values + primary_key_value
+        return conn.commit(sql, params)
 
 class Usuario(Tabela):
 

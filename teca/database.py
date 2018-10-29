@@ -284,6 +284,15 @@ class Curso(Tabela):
     _columns = ['cod_curso', 'nome_curso']
     _primary_key = ['cod_curso']
 
+    @property
+    def professores(self):
+        return Professor.filter(cod_curso=self.cod_curso)
+
+    @property
+    def alunos(self):
+        return Aluno.filter(cod_curso=self.cod_curso)
+
+
 
 class Categoria(Tabela):
     _table = 'categoria'

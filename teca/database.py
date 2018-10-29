@@ -116,9 +116,9 @@ class Tabela(metaclass=abc.ABCMeta):
         keys = len(pk) if not_scalar else 1
         conn = Database.connect()
         table = cls._table
-        selected_columns = cls._columns[0:keys]
+        where_columns = cls._columns[0:keys]
         columns = cls._columns
-        where = " AND ".join(map("{}=%s".format, selected_columns))
+        where = " AND ".join(map("{}=%s".format, where_columns))
         sql = f"SELECT {','.join(columns)} FROM {table} WHERE {where}"
         params = pk if not_scalar else (pk,)
         result = list(conn.query(sql, params))

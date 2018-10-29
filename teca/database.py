@@ -122,11 +122,11 @@ class Tabela(metaclass=abc.ABCMeta):
         sql = f"SELECT {','.join(columns)} FROM {table} WHERE {where}"
         params = pk if not_scalar else (pk,)
         result = list(conn.query(sql, params))
-        if not result:
-            return None
         instances = [cls(*tuple(r)) for r in result]
-        if unpack:
-            instances = instances[0]
+        if not result and unpack:
+            return None
+        elif unpack:
+            return instances[0]
         return instances
 
     @classmethod

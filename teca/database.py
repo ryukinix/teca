@@ -130,8 +130,16 @@ class Tabela(metaclass=abc.ABCMeta):
         return instances
 
     @classmethod
-    def filter(cls, pk):
-        return cls.select(pk, unpack=False)
+    def filter(cls, pk=None, **kwargs):
+        if pk:
+            return cls.select(pk, unpack=False)
+        else:
+            conn = Database.connect()
+            columns = cls._columns
+            where_columns, values = zip(*kwargs.items())
+            where = " AND ".join(map("{}=%s".format, where_columns))
+            sql = f"SELECT {','.join(columns)} FROM {cls._table} WHERE {where}"
+            return [cls(*r) for r in conn.query(sql, values)]
 
     @classmethod
     def select_all(cls):

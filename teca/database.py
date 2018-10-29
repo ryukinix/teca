@@ -87,13 +87,12 @@ class Tabela(metaclass=abc.ABCMeta):
 
     def __repr__(self):
         cls_name = self.__class__.__name__
-        values_format = [f'{k}={v!r}' for k, v in self.items]
+        values_format = [f'{k}={v!r}' for k, v in self.items()]
         attributes = ', '.join(values_format)
         return f'{cls_name}({attributes})'
 
     __str__ = __repr__
 
-    @property
     def items(self):
         columns = self._columns
         variables = vars(self)
@@ -106,7 +105,7 @@ class Tabela(metaclass=abc.ABCMeta):
     def insert(self):
         conn = Database.connect()
         table = self._table
-        columns, values = zip(*self.items)
+        columns, values = zip(*self.items())
         params = ', '.join(['%s' for _ in range(len(columns))])
         sql = f"INSERT INTO {table} ({','.join(columns)}) VALUES ({params})"
         return conn.commit(sql, tuple(values))

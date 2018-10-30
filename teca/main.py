@@ -35,20 +35,49 @@ def main():
          
                 #-----Entradas do USUÁRIO
                 print('Então vamos lhe cadastrar!!')
-                matricula      = input('> Digite sua matricula\n>>>: ') 
+
+               
+                while True:
+                    matricula      = input('> Digite sua matricula\n>>>: ') 
+                    if database.Usuario.select(matricula) is None:
+                        break
+                    else:
+                        print("Matrícula ocupada!")
+
                 nome           = input('>Qual o seu nome completo?\n>>>: ')
                 endereco       = input('>Onde você mora?\n>>>: ')
-                tipo_usuario   = input('> Você é aluno, professor ou outro funcionário?\n>>>: ')  
-                nickname       = input('>Digite um nickname para acesso a sua conta: ')
+    
+                tipos = {
+                    '1':'aluno',
+                    '2':'professor',
+                    '3':'funcionario'
+                }
+
+
+                print('> Você é aluno, professor ou outro funcionário?')
+                for numero,tipo in tipos.items():
+                    print(numero,tipo)
+                while True:
+                    tipo_usuario = input('\n>>>: ')
+                    if tipo_usuario in tipos:
+                        tipo = tipos[tipo_usuario]
+                        break
+                    else:
+                        print('Opção inválida')
+                                        
+                while True:
+                    nickname = input('>Digite um nickname para acesso a sua conta: ')
+                    if len(database.Usuario.filter(nickname=nickname)) == 0 :
+                        break
+                    else:
+                        print("Nickname já existe!") 
+
                 senha_cadastro = getpass.getpass(prompt='>Digite uma senha: ')
 
-                #-----Inserção do banco de dados da tabela USUARIO
-                database.Usuario(matricula, nickname, database.senha_hash(senha_cadastro), nome, endereco, tipo_usuario,'usuario').insert()        
 
                 #-----Tela de cadastramento do usuário ALUNO    
-                if(tipo_usuario == 'aluno'):   
+                if(tipo_usuario == '1'):   
 
-                        while True:   
                             #----Entradas do ALUNO                  
                             cod_curso            = input('> Digite o código de seu curso\n>>>: ')
                             data_de_ingresso     = input('> Em que ano,mês e dia você entrou na UFC?(YYYY-MM-DD)\n>>>: ')
@@ -56,65 +85,56 @@ def main():
                             
                             #----Impressão dos dados ALUNO digitados
                             print('\n')
-                            print('Matricula: '+matricula+'\n')
                             print('Código do curso: '+cod_curso+'\n')
                             print('Data de ingresso no curso: '+data_de_ingresso+'\n')
                             print('Data de conclusão do curso: '+data_de_conclusao+'\n')
-                            confirmacao = input('Está certo os dados o que você colocou?(Y/N): ')
-
-                            if(confirmacao=='Y'):
-                                #-----Inserção do banco de dados da tabela ALUNO
-                                database.Aluno(matricula, data_de_conclusao, data_de_ingresso, cod_curso).insert()
-                                break
 
                 #-----Tela de cadastramento do usuário PROFESSOR
-                if(tipo_usuario == 'professor'):     
-                                   
-                        while True:   
+                if(tipo_usuario == '2'):     
+                                  
                             #----Entradas do PROFESSOR
-                            matricula_siape      = input('> Digite sua matricula Siape\n>>>: ')
                             data_de_contratacao  = input('> Em que ano, mês e dia você foi contratado pela UFC?(YYYY-MM-DD)\n>>>: ')
                             regime_de_trabalho   = input('> O seu regime de trabalho é de quantas horas?(DE|20H|40H)\n>>>: ')
                             cod_curso            = input('> Qual o código do curso que você leciona?\n>>>: ')
                             
                             #----Impressão dos dados PROFESSOR digitados
                             print('\n')
-                            print('Matricula Siape: '+matricula_siape+'\n')
                             print('Data de contração: '+data_de_contratacao+'\n')
                             print('Regime de trabalho: '+regime_de_trabalho+'\n')
                             print('Código do curso: '+cod_curso+'\n')
-                            confirmacao = input('Está certo dos dados o que você colocou?(Y/N):')
 
-                            if(confirmacao=='Y'):
-                                #-----Inserção do banco de dados da tabela PROFESSOR
-                                database.Professor(matricula_siape, data_de_contratacao, regime_de_trabalho, cod_curso).insert()
-                                break
 
-                #-----Tela de cadastramento do usuário FUNCIONARIO
-                if(tipo_usuario == 'funcionario'):
-
-                        while True:
-                            #----Impressão dos dados FUNCIONARIO digitados
-                            matricula_funcionario = input('> Digite sua matricula\n>>>: ')
-                            print('\n')
-                            print('Matricula de funcionario: '+matricula_funcionario+'\n')
-                            confirmacao = input('Está certo dos dados o que você colocou?(Y/N): ')
-
-                            if(confirmacao == 'Y'):
-                                #-----Inserção do banco de dados da tabela FUNCIONARIO
-                                database.Funcionario(matricula_funcionario).insert()
-                                break
-
-                #----Tela de cadastramento dos TELEFONES                   
+                #----Tela de cadastramento dos TELEFONES                
+                telefones = []   
                 while True:
                     telefone = input('> Digite um numero de telefone: ')
-
-                    #-----Inserção do banco de dados da tabela TELEFONES
-                    database.Telefones(matricula,telefone).insert()
-                    ask_2 = input('> Tem mais algum telefone?(Y/N) ')
+                    telefones.append(telefone)
+                    ask_2    = input('> Tem mais algum telefone?(Y/N) ')
                     if (ask_2 == 'N'):
-                            break
-            
+                        break
+
+                confirmacao = input('Está certo dos dados o que você colocou?(Y/N):')
+
+                if(confirmacao=='Y'):
+
+                    database.Usuario(matricula, nickname, database.senha_hash(senha_cadastro), nome, endereco, tipo_usuario,'usuario').insert()
+                    for telefone in telefones:
+                        database.Telefones(matricula,telefone).insert()
+
+                    if(tipo_usuario=='professor'):
+                        #-----Inserção do banco de dados da tabela PROFESSOR
+                        database.Professor(matricula, data_de_contratacao, regime_de_trabalho, cod_curso).insert()
+                      
+
+                    elif(tipo_usuario=='aluno'):
+                        #-----Inserção do banco de dados da tabela PROFESSOR
+                        database.Aluno(matricula, data_de_conclusao, data_de_ingresso, cod_curso).insert()
+                   
+
+                    elif(tipo_usuario=='funcionario'):
+                        #-----Inserção do banco de dados da tabela PROFESSOR
+                        database.Funcionario(matricula).insert()
+                
                 #----Finalização do cadastramento 
                 print('USUÁRIO CADASTRADO!!')
 

@@ -2,8 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from teca import database
+from datetime import datetime
 import hashlib
 import getpass
+
+def data_valida(data_string, format='%Y-%m-%d'):
+    try:
+        datetime.strptime(data_string, format)
+        return True
+    except:
+        return False
 
 def main():
     db = database.Database.connect()
@@ -15,7 +23,7 @@ def main():
     while True:
         ask = input(' Já é cadastrado? Y/N ')
 
-        if (ask == 'Y' or ask == 'y' ):
+        if (ask.lower() == 'y'):
             nickname = input('> Usuário: ')
             senha = getpass.getpass(prompt='>Senha: ')
             login = database.login(nickname, senha)
@@ -31,13 +39,15 @@ def main():
  #-------------------------------------CADASTRAMENTO DO USUÁRIO--------------------------------------------------                   
      
         #-----INÍCIO DO CADASTRAMENTO INICAL DO USUARIO-----#
-        if (ask == 'N' or ask == 'n'):                 
+        if (ask.lower() == 'n'):                 
                 print('Então vamos lhe cadastrar!!')          
                 
                 #---INICIO DA ENTRADA DA MATRICULA---#     
                 while True:
                     matricula = input('> Digite sua matricula\n>>>: ') 
-                    if database.Usuario.select(matricula) is None:
+                    if not matricula.isdecimal():
+                        print("Matricula deve ser um inteiro, sua desgraça!")
+                    elif database.Usuario.select(matricula) is None:
                         break
                     else:
                         print("Matrícula ocupada!")
@@ -76,6 +86,7 @@ def main():
 
         #-----FIM DO CADASTRAMENTO INICAL DO USUARIO-----#
 
+
                 #-----INÍCIO DO CADASTRO DO ALUNO-----#
                 if(tipo_usuario == '1'):   
                         
@@ -83,8 +94,8 @@ def main():
                             tipos_de_curso = {
                                 '1':'Engenharia de Computação',
                                 '2':'Engenharia Elétrica',
-                                '3':'Psicologia'
-                                '4':'Finanças'
+                                '3':'Psicologia',
+                                '4':'Finanças',
                                 '5':'Economia'  
                             }
                             print('>Digite o código de seu curso')
@@ -93,15 +104,24 @@ def main():
                             while True:
                                 cod_curso = input('\n>>>: ')
                                 if cod_curso in tipos_de_curso:
-                                    tipo = tipos_de_usuario[cod_curso]
+                                    tipo = tipos_de_curso[cod_curso]
                                     break
                                 else:
                                     print('Opção inválida')
                             #---FIM DA ENTRADA DO CÓDIGO DE CURSO---#
 
-                            data_de_ingresso     = input('> Em que ano,mês e dia você entrou na UFC?(YYYY-MM-DD)\n>>>: ')
-                            data_de_conclusao    = input('> Em que ano,mês e dia você vai concluir seu curso?(YYYY-MM-DD)\n>>>: ')
-                            
+                            while True:
+                                data_de_ingresso     = input('> Em que ano,mês e dia você entrou na UFC?(YYYY-MM-DD)\n>>>: ')
+                                if data_valida(data_de_ingresso):
+                                    break
+                                else:
+                                    print('Data invaláda!')
+                            while True:
+                                data_de_conclusao    = input('> Em que ano,mês e dia você vai concluir seu curso?(YYYY-MM-DD)\n>>>: ')
+                                if data_valida(data_de_conclusao):
+                                    break
+                                else:
+                                    print("Data inválida")
                             #-----CHECK-----#
                             print('\n')
                             print('Código do curso: '+cod_curso+'\n')
@@ -111,9 +131,13 @@ def main():
 
                 #-----INCIO DO CADASTRO DE PROFESSOR-----#            
                 if(tipo_usuario == '2'):              
-                                
-                            data_de_contratacao  = input('> Em que ano, mês e dia você foi contratado pela UFC?(YYYY-MM-DD)\n>>>: ')
-                            
+                          
+                            while True:      
+                                data_de_contratacao  = input('> Em que ano, mês e dia você foi contratado pela UFC?(YYYY-MM-DD)\n>>>: ')
+                                if data_valida(data_de_contratacao):
+                                    print(data_de_contratacao)
+                                else:
+                                    print("Data inválida")
                             #---INICIO DA ENTRADA DO REGIME DE TRABALHO---#
                             tipos_regime = {
                                 '1':'D.E.(Dedicação exclusiva)',
@@ -144,9 +168,9 @@ def main():
                             tipos_de_curso = {
                                 '1':'Engenharia de Computação',
                                 '2':'Engenharia Elétrica',
-                                '3':'Psicologia'
-                                '4':'Finanças'
-                                '5':'Economia'  
+                                '3':'Psicologia',
+                                '4':'Finanças',
+                                '5':'Economia'
                             }
                             print('>Digite o código de seu curso')
                             for numero,tipo in tipos_de_curso.items():
@@ -154,7 +178,7 @@ def main():
                             while True:
                                 cod_curso = input('\n>>>: ')
                                 if cod_curso in tipos_de_curso:
-                                    tipo = tipos_de_usuario[cod_curso]
+                                    tipo = tipos_de_curso[cod_curso]
                                     break
                                 else:
                                     print('Opção inválida')
@@ -174,25 +198,26 @@ def main():
                     telefone = input('> Digite um numero de telefone: ')
                     telefones.append(telefone)
                     ask_2    = input('> Tem mais algum telefone?(Y/N) ')
-                    if (ask_2 == 'N'):
+                    if (ask_2.lower() == 'n'):
                         break
                 #-----FIM INSERÇÃO DOS TELEFONES-----#                                            
                 
 
-                confirmacao = input('Está certo dos dados o que você colocou?(Y/N):')
+                confirmacao = input('\nEstá certo dos dados o que você colocou?(Y/N):')
 
                 #-----INICIO INSERÇÃO NO BANCO DE DADOS-----#
-                if(confirmacao == 'Y' or confirmacao == 'y'):
+                if(confirmacao.lower() == 'y'):
+
                     database.Usuario(matricula, nickname, database.senha_hash(senha_cadastro), nome, endereco, tipo_usuario,'usuario').insert()
                     
                     for telefone in telefones:
                         database.Telefones(matricula,telefone).insert()
                     
-                    if(tipo_usuario=='2'):
+                    if(tipo_usuario=='1'):
+                        database.Aluno(matricula, data_de_conclusao, data_de_ingresso, cod_curso).insert()  
+
+                    elif(tipo_usuario=='2'):
                         database.Professor(matricula, data_de_contratacao, regime_de_trabalho, cod_curso).insert()                      
-                    
-                    elif(tipo_usuario=='1'):
-                        database.Aluno(matricula, data_de_conclusao, data_de_ingresso, cod_curso).insert()                
                     
                     elif(tipo_usuario=='3'):
                         database.Funcionario(matricula).insert()                

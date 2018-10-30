@@ -14,6 +14,7 @@ def data_valida(data_string, format='%Y-%m-%d'):
         return False
 
 def main():
+
     db = database.Database.connect()
 
  #-------------------------------------LOGIN INICIAL--------------------------------------------------                   
@@ -208,17 +209,31 @@ def main():
 
                 #-----FIM DO CADASTRO DE PROFESSOR-----#            
 
-                #-----INICIO INSERÇÃO DOS TELEFONES-----#(BUG!!!!!)(LIMITAR O TAMANHO DO TELEFONE)                
-                telefones = []   
+                #-----INICIO INSERÇÃO DOS TELEFONES-----(BUG!!!!!)(LIMITAR O TAMANHO DO TELEFONE)       
+                         
+                telefones = []
+
                 while True:
                     telefone = input('> Digite um numero de telefone: ')
-                    telefones.append(telefone)
-                    ask_2    = input('> Tem mais algum telefone?(Y/N) ')
+                
+                    if not telefone.isdecimal(): 
+                        print('Entrada inválida\n')
+                    elif len(str(telefone)) != 11:
+                        print('Entrada inválida')
+             
+                    while True:
+                        ask_2 = input('> Tem mais algum telefone?(Y/N) ')
+                        if(ask_2.lower() != 'n') and (ask_2.lower() != 'y'):
+                             print('Entrada inválida')
+                        else:
+                            break        
                     if (ask_2.lower() == 'n'):
                         break
+                            
+                    add_telefones = telefones.append(telefone)
+                                                               
                 #-----FIM INSERÇÃO DOS TELEFONES-----#                                            
                 
-
                 confirmacao = input('\nEstá certo dos dados o que você colocou?(Y/N):')
 
                 #-----INICIO INSERÇÃO NO BANCO DE DADOS-----#

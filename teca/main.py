@@ -46,15 +46,25 @@ def main():
                 while True:
                     matricula = input('> Digite sua matricula\n>>>: ') 
                     if not matricula.isdecimal():
-                        print("Matricula deve ser um inteiro, sua desgraça!")
+                        print("Matricula deve ser um inteiro!")
                     elif database.Usuario.select(matricula) is None:
                         break
                     else:
                         print("Matrícula ocupada!")
                 #---FIM DA ENTRADA DA MATRICULA---#        
 
-                nome = input('>Qual o seu nome completo?\n>>>: ')
-                endereco = input('>Onde você mora?\n>>>: ')    
+                while True:
+                    nome = input('>Qual o seu nome completo?\n>>>: ')
+                    if len(nome) != 0:
+                        break
+                    else:
+                        print('Você tem um nome!')
+                while True:
+                    endereco = input('>Onde você mora?\n>>>: ')    
+                    if len(endereco) != 0:
+                        break
+                    else:
+                        print('Você mora em algum lugar!')
                 
                 #---INICIO DA ENTRADA DO TIPO DE USUARIO---#
                 tipos = {
@@ -79,9 +89,16 @@ def main():
                     nickname = input('>Digite um nickname para acesso a sua conta: ')
                     if len(database.Usuario.filter(nickname=nickname)) == 0 :
                         break
+                    elif len(nickname) == 0:
+                        print("Nickname não pode ser vazio!")
                     else:
                         print("Nickname já existe!") 
-                senha_cadastro = getpass.getpass(prompt='>Digite uma senha: ')
+                while True:
+                    senha_cadastro = getpass.getpass(prompt='>Digite uma senha: ')
+                    if len(senha_cadastro)!=0:
+                        break
+                    else:
+                        print('Senha inválida!')
                 #---FIM DA ENTRADA DO TIPO DE USUARIO---#
 
         #-----FIM DO CADASTRAMENTO INICAL DO USUARIO-----#
@@ -131,64 +148,63 @@ def main():
 
                 #-----INCIO DO CADASTRO DE PROFESSOR-----#            
                 if(tipo_usuario == '2'):              
-                          
-                            while True:      
-                                data_de_contratacao  = input('> Em que ano, mês e dia você foi contratado pela UFC?(YYYY-MM-DD)\n>>>: ')
-                                if data_valida(data_de_contratacao):
-                                    print(data_de_contratacao)
-                                else:
-                                    print("Data inválida")
-                            #---INICIO DA ENTRADA DO REGIME DE TRABALHO---#
-                            tipos_regime = {
-                                '1':'D.E.(Dedicação exclusiva)',
-                                '2':'20 horas',
-                                '3':'40 horas'
-                            }
-                            print('> O seu regime de trabalho é de quantas horas?\nOpções:')
-                            for numero,regimes in tipos_regime.items():
-                                print(numero,regimes)
-                            while True:
-                                regime_trb = input('\n>>>: ')
-                                if regime_trb in tipos_regime:
-                                    regimes = tipos_regime[regime_trb]
-                                    if regime_trb == '1':
-                                        regime_de_trabalho = 'DE'
-                                        break
-                                    if regime_trb == '2':
-                                        regime_de_trabalho = '20H'
-                                        break
-                                    if regime_trb == '3':
-                                        regime_de_trabalho = '40H'    
-                                        break                                                                              
-                                else: 
-                                    print('Opção inválida!')
-                            #---FIM DA ENTRADA DO REGIME DE TRABALHO---#        
-                            
-                            #---INICIO DA ENTRADA DO CÓDIGO DE CURSO---#    
-                            tipos_de_curso = {
-                                '1':'Engenharia de Computação',
-                                '2':'Engenharia Elétrica',
-                                '3':'Psicologia',
-                                '4':'Finanças',
-                                '5':'Economia'
-                            }
-                            print('>Digite o código de seu curso')
-                            for numero,tipo in tipos_de_curso.items():
-                                print(numero,tipo)
-                            while True:
-                                cod_curso = input('\n>>>: ')
-                                if cod_curso in tipos_de_curso:
-                                    tipo = tipos_de_curso[cod_curso]
-                                    break
-                                else:
-                                    print('Opção inválida')
-                            #---FIM DA ENTRADA DO CÓDIGO DE CURSO---#
+                    while True:      
+                        data_de_contratacao  = input('> Em que ano, mês e dia você foi contratado pela UFC?(YYYY-MM-DD)\n>>>: ')
+                        if data_valida(data_de_contratacao):
+                            break
+                        else:
+                            print("Data inválida")
+                    #---INICIO DA ENTRADA DO REGIME DE TRABALHO---#
+                    tipos_regime = {
+                        '1':'D.E.(Dedicação exclusiva)',
+                        '2':'20 horas',
+                        '3':'40 horas'
+                    }
+                    print('> O seu regime de trabalho é de quantas horas?\nOpções:')
+                    for numero,regimes in tipos_regime.items():
+                        print(numero,regimes)
+                    while True:
+                        regime_trb = input('\n>>>: ')
+                        if regime_trb in tipos_regime:
+                            regimes = tipos_regime[regime_trb]
+                            if regime_trb == '1':
+                                regime_de_trabalho = 'DE'
+                                break
+                            if regime_trb == '2':
+                                regime_de_trabalho = '20H'
+                                break
+                            if regime_trb == '3':
+                                regime_de_trabalho = '40H'    
+                                break                                                                              
+                        else: 
+                            print('Opção inválida!')
+                    #---FIM DA ENTRADA DO REGIME DE TRABALHO---#        
+                    
+                    #---INICIO DA ENTRADA DO CÓDIGO DE CURSO---#    
+                    tipos_de_curso = {
+                        '1':'Engenharia de Computação',
+                        '2':'Engenharia Elétrica',
+                        '3':'Psicologia',
+                        '4':'Finanças',
+                        '5':'Economia'
+                    }
+                    print('>Digite o código de seu curso')
+                    for numero,tipo in tipos_de_curso.items():
+                        print(numero,tipo)
+                    while True:
+                        cod_curso = input('\n>>>: ')
+                        if cod_curso in tipos_de_curso:
+                            tipo = tipos_de_curso[cod_curso]
+                            break
+                        else:
+                            print('Opção inválida')
+                    #---FIM DA ENTRADA DO CÓDIGO DE CURSO---#
 
-                            #-----CHECK-----#                            
-                            print('\n')
-                            print('Data de contração: '+data_de_contratacao+'\n')
-                            print('Regime de trabalho: '+regime_de_trabalho+'\n')
-                            print('Código do curso: '+cod_curso+'\n')
+                    #-----CHECK-----#                            
+                    print('\n')
+                    print('Data de contração: '+data_de_contratacao+'\n')
+                    print('Regime de trabalho: '+regime_de_trabalho+'\n')
+                    print('Código do curso: '+cod_curso+'\n')
 
                 #-----FIM DO CADASTRO DE PROFESSOR-----#            
 

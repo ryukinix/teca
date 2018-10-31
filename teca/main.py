@@ -184,10 +184,10 @@ def entrada_telefones(matricula):
         telefone = input('> Digite um numero de telefone: ')
 
         if not telefone.isdecimal():
-            print('Entrada inválida')
+            print('Entrada inválida! Telefone precisa ser um número.')
             continue
         elif len(str(telefone)) not in range(8, 12):
-            print('Entrada inválida')
+            print('Telefone deve conter de 8 a 11 digitos.')
             continue
 
         telefones.append(database.Telefones(matricula, telefone))

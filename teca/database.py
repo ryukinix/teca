@@ -309,6 +309,11 @@ class Autor(Tabela):
     _columns = ['cpf', 'nome', 'nacionalidade']
     _primary_key = ['cpf']
 
+    @property
+    def livros(self):
+        autor_livro = AutorLivro.filter(self.cpf)
+        return [Livro.select(k.livro_isbn) for k in autor_livro]
+
 
 class AutorLivro(Tabela):
     _table = 'autor_livro'

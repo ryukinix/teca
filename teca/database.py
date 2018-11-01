@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mysql.connector as mysql_driver
-import hashlib
-import abc
-
 """Interface de aplicação com o SGBD MySQL
 
-Provê um simple modelo ORM (Object Relational Model)
+Provê um simples modelo ORM (Object Relational Model)
 implementado em Python.
 
 Ex.:
@@ -16,8 +12,11 @@ Ex.:
 >>> u = database.Usuario.select(394192)
 >>> u.nome
 'Manoel Vilela'
-
 """
+
+import mysql.connector as mysql_driver
+import hashlib
+import abc
 
 
 class Database(object):
@@ -73,13 +72,13 @@ class Database(object):
 class Tabela(metaclass=abc.ABCMeta):
 
     """Classe abstrata para ser base de herança
-    nas implementações de cada Tabela especialidade.
+    nas implementações de cada Tabela especializada.
 
     Provê métodos básicos para seleção, inserção, remoção e
     atualização.
     """
 
-    # Para serem redefinidas quando a herença for feita
+    # Para serem redefinidas quando a herança for feita
     _table = None
     _columns = []
     _primary_key = []

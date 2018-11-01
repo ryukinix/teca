@@ -61,15 +61,10 @@ def entrada_curso():
 
 def entrada_aluno(matricula):
     cod_curso = entrada_curso()
-    data_de_ingresso = check.entrada('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)\n>>>',
-                                    check.data_de_ingresso)
-    data_de_conclusao = check.entrada('> Em que data você vai concluir seu curso? (YYYY-MM-DD)\n>>>',
-                                    check.data_de_conclusao)
-
-    print('\n')
-    print('Código do curso: ', cod_curso)
-    print('Data de ingresso no curso: ', data_de_ingresso)
-    print('Data de conclusão do curso: ', data_de_conclusao)
+    print('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)')
+    data_de_ingresso = check.entrada('>>> ', check.data)
+    print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')
+    data_de_conclusao = check.entrada('>>> ', check.data)
 
     aluno = database.Aluno(matricula, data_de_conclusao,
                            data_de_ingresso, cod_curso)
@@ -78,8 +73,9 @@ def entrada_aluno(matricula):
 
 def entrada_professor(matricula):
     cod_curso = entrada_curso()
-    data_de_contratacao = check.entrada('> Em que data você foi contratado pela UFC? (YYYY-MM-DD)\n>>>',
-                                      check.data_de_conclusao)
+
+    print('> Em que data você foi contratado pela UFC? (YYYY-MM-DD)')
+    data_de_contratacao = check.entrada('>>> ', check.data)
     tipos_regime = {
         '1': 'DE',
         '2': '20H',
@@ -88,11 +84,6 @@ def entrada_professor(matricula):
     print('> O seu regime de trabalho é de quantas horas?')
     op = menu_enumeracao(tipos_regime)
     regime_de_trabalho = tipos_regime[op]
-
-    print('\n')
-    print('Data de contração: '+data_de_contratacao+'\n')
-    print('Regime de trabalho: '+regime_de_trabalho+'\n')
-    print('Código do curso: '+cod_curso+'\n')
 
     prof = database.Professor(matricula, data_de_contratacao,
                               regime_de_trabalho, cod_curso)
@@ -104,25 +95,11 @@ def entrada_telefones(matricula):
 
     telefone = check.entrada('> Digite um numero de telefone\n>>>',check.telefones)
     while True:
-    #     telefone = input('> Digite um numero de telefone: ')
-
-    #     if not telefone.isdecimal():
-    #         print('Entrada inválida! Telefone precisa ser um número.')
-    #         continue
-    #     elif len(str(telefone)) not in range(8, 12):
-    #         print('Telefone deve conter de 8 a 11 digitos.')
-    #         continue
-
+        telefone = check.entrada('> Digite um numero de telefone: ',
+                                 check.telefone)
         telefones.append(database.Telefones(matricula, telefone))
-        ask = check.entrada('> Tem mais algum telefone? (Y/N) ',check.ask)
-    # while True:
-    #     ask = input('> Tem mais algum telefone? (Y/N) ')
-    #     if ask.lower() not in ('y', 'n'):
-    #         print('Entrada inválida')
-    #     else:
-    #         break
-
-        if (ask.lower() == 'n'):
+        ask = input('> Tem mais algum telefone? (Y/N) ')
+        if ask.lower() != 'y':
             break
 
     return telefones
@@ -136,9 +113,22 @@ def tela_cadastro_usuario():
     telefones = entrada_telefones(usuario.matricula)
     # Entradas especiais por tipo de usuário
     if usuario.tipo == 'aluno':
-        aluno = entrada_aluno(usuario.matricula)
+        extra = entrada_aluno(usuario.matricula)
     elif usuario.tipo == 'professor':
-        professor = entrada_professor(usuario.matricula)
+        extra = entrada_professor(usuario.matricula)
+    else:
+        extra = database.Funcionario(usuario.matricula)
+
+    print("== DADOS INSERIDOS: ")
+    for attr, value in usuario.items():
+        if attr == 'senha_hash':
+            value = '*' * 8
+            attr = 'senha'
+        print(f"{attr}: {value}")
+
+    for attr, value in extra.items():
+        if attr not in extra._primary_key:
+            print(f"{attr}: {value}")
 
     confirmacao = input('\nEstá certo os dados que você inseriu? (Y/N):')
     # -----INICIO INSERÇÃO NO BANCO DE DADOS----- #
@@ -147,9 +137,9 @@ def tela_cadastro_usuario():
         for telefone in telefones:
             telefone.insert()
         if usuario.tipo == 'aluno':
-            aluno.insert()
+            extra.insert()
         elif usuario.tipo == 'professor':
-            professor.insert()
+            extra.insert()
         elif usuario.tipo == 'funcionario':
             database.Funcionario(usuario.matricula).insert()
         print('USUÁRIO CADASTRADO!')

@@ -5,28 +5,29 @@ from datetime import datetime
 from teca import database
 
 
-class Error(object):
+class ErrorMessage(object):
 
-    def __init__(self, mensagem):
+    def __init__(self, mensagem, status):
         self.mensagem = mensagem
+        self.status = status
 
     def __bool__(self):
-        return False
+        return self.status
 
     def __str__(self):
         return self.mensagem
 
 
-class Ok(object):
+class Error(ErrorMessage):
 
     def __init__(self, mensagem):
-        self.mensagem = mensagem
+        super().__init__(mensagem, False)
 
-    def __bool__(self):
-        return True
 
-    def __str__(self):
-        return self.mensagem
+class Ok(ErrorMessage):
+
+    def __init__(self, mensagem):
+        super().__init__(mensagem, True)
 
 
 def data(data_string, format='%Y-%m-%d'):
@@ -74,6 +75,15 @@ def nickname(nickname):
         return Error("Nickname não pode ser vazio!")
     else:
         return Ok("Nickname ok!")
+
+
+def telefone(telefone):
+    if not telefone.isdecimal():
+        return Error("Telefone deve conter apenas dígitos!")
+    elif len(telefone) not in range(8, 12):
+        return Error("Telefone deve conter entre 8 a 12 dígitos!")
+    else:
+        return Ok("Telefone ok!")
 
 
 def entrada(prompt, funcao_check):

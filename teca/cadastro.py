@@ -32,7 +32,6 @@ def entrada_usuario_comum():
     print('> Você é aluno, professor ou outro funcionário?')
     escolha = menu_enumeracao(tipos)
     tipo = tipos[escolha]
-
     nickname = check.entrada('> Digite um nickname para acesso a sua conta: ',
                              check.nickname)
 
@@ -44,7 +43,6 @@ def entrada_usuario_comum():
         else:
             print(status)
 
-    # -----FIM DO CADASTRAMENTO INICAL DO USUARIO----- #
     permissao = 'usuario'
     senha_hash = database.senha_hash(senha_cadastro)
     usuario = database.Usuario(matricula, nickname,
@@ -63,27 +61,15 @@ def entrada_curso():
 
 def entrada_aluno(matricula):
     cod_curso = entrada_curso()
-    while True:
-        print('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)')
-        data_de_ingresso = input('>>> ')
-        if check.data(data_de_ingresso):
-            break
-        else:
-            print('Data inválida!')
-    while True:
-        print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')
-        data_de_conclusao = input('>>> ')
-        if check.data(data_de_conclusao):
-            break
-        else:
-            print("Data inválida")
+    data_de_ingresso = check.entrada('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)\n>>>',
+                                    check.data_de_ingresso)
+    data_de_conclusao = check.entrada('> Em que data você vai concluir seu curso? (YYYY-MM-DD)\n>>>',
+                                    check.data_de_conclusao)
 
-    # -----CHECK----- #
     print('\n')
     print('Código do curso: ', cod_curso)
     print('Data de ingresso no curso: ', data_de_ingresso)
     print('Data de conclusão do curso: ', data_de_conclusao)
-    # -----FIM DO CADASTRO DO ALUNO----- #
 
     aluno = database.Aluno(matricula, data_de_conclusao,
                            data_de_ingresso, cod_curso)
@@ -92,15 +78,8 @@ def entrada_aluno(matricula):
 
 def entrada_professor(matricula):
     cod_curso = entrada_curso()
-
-    while True:
-        print('> Em que data você foi contratado pela UFC? (YYYY-MM-DD)')
-        data_de_contratacao = input('>>> ')
-        if check.data(data_de_contratacao):
-            break
-        else:
-            print("Data inválida")
-
+    data_de_contratacao = check.entrada('> Em que data você foi contratado pela UFC? (YYYY-MM-DD)\n>>>',
+                                      check.data_de_conclusao)
     tipos_regime = {
         '1': 'DE',
         '2': '20H',
@@ -110,7 +89,6 @@ def entrada_professor(matricula):
     op = menu_enumeracao(tipos_regime)
     regime_de_trabalho = tipos_regime[op]
 
-    # -----CHECK----- #
     print('\n')
     print('Data de contração: '+data_de_contratacao+'\n')
     print('Regime de trabalho: '+regime_de_trabalho+'\n')
@@ -123,24 +101,26 @@ def entrada_professor(matricula):
 
 def entrada_telefones(matricula):
     telefones = []
-    while True:
-        telefone = input('> Digite um numero de telefone: ')
 
-        if not telefone.isdecimal():
-            print('Entrada inválida! Telefone precisa ser um número.')
-            continue
-        elif len(str(telefone)) not in range(8, 12):
-            print('Telefone deve conter de 8 a 11 digitos.')
-            continue
+    telefone = check.entrada('> Digite um numero de telefone\n>>>',check.telefones)
+    while True:
+    #     telefone = input('> Digite um numero de telefone: ')
+
+    #     if not telefone.isdecimal():
+    #         print('Entrada inválida! Telefone precisa ser um número.')
+    #         continue
+    #     elif len(str(telefone)) not in range(8, 12):
+    #         print('Telefone deve conter de 8 a 11 digitos.')
+    #         continue
 
         telefones.append(database.Telefones(matricula, telefone))
-
-        while True:
-            ask = input('> Tem mais algum telefone? (Y/N) ')
-            if ask.lower() not in ('y', 'n'):
-                print('Entrada inválida')
-            else:
-                break
+        ask = check.entrada('> Tem mais algum telefone? (Y/N) ',check.ask)
+    # while True:
+    #     ask = input('> Tem mais algum telefone? (Y/N) ')
+    #     if ask.lower() not in ('y', 'n'):
+    #         print('Entrada inválida')
+    #     else:
+    #         break
 
         if (ask.lower() == 'n'):
             break

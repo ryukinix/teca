@@ -182,6 +182,7 @@ class Tabela(metaclass=abc.ABCMeta):
         params = values + primary_key_value
         return conn.commit(sql, params)
 
+
 class Usuario(Tabela):
 
     _table = 'usuario'
@@ -228,6 +229,7 @@ class Aluno(Tabela):
     def nome_curso(self):
         return Curso.select(self.cod_curso).nome_curso
 
+
 class Professor(Tabela):
     _table = 'professor'
     _columns = ['mat_siape', 'data_de_contratacao', 'regime_trabalho',
@@ -255,7 +257,8 @@ class Funcionario(Tabela):
 
 class Livro(Tabela):
     _table = 'livro'
-    _columns = ['isbn', 'titulo', 'ano', 'editora', 'qt_copias', 'cod_categoria']
+    _columns = ['isbn', 'titulo', 'ano', 'editora',
+                'qt_copias', 'cod_categoria']
     _primary_key = ['isbn']
 
     @property
@@ -311,7 +314,6 @@ class Curso(Tabela):
     @property
     def alunos(self):
         return Aluno.filter(cod_curso=self.cod_curso)
-
 
 
 class Categoria(Tabela):

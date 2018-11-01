@@ -220,6 +220,8 @@ class Aluno(Tabela):
     _columns = ['matricula', 'data_de_conclusao_prevista',
                 'data_de_ingresso', 'cod_curso']
     _primary_key = ['matricula']
+    livros_max = 3
+    prazo_max = 15
 
     @property
     def usuario(self):
@@ -235,6 +237,8 @@ class Professor(Tabela):
     _columns = ['mat_siape', 'data_de_contratacao', 'regime_trabalho',
                 'cod_curso']
     _primary_key = ['mat_siape']
+    livros_max = 5
+    prazo_max = 30
 
     @property
     def usuario(self):
@@ -249,6 +253,8 @@ class Funcionario(Tabela):
     _table = 'funcionario'
     _columns = ['matricula']
     _primary_key = ['matricula']
+    livros_max = 4
+    prazo_max = 21
 
     @property
     def usuario(self):

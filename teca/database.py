@@ -277,6 +277,14 @@ class Livro(Tabela):
         cat = Categoria.select(self.cod_categoria)
         return cat.descricao
 
+    @property
+    def emprestimos(self):
+        return Emprestimo.filter(isbn=self.isbn)
+
+    @property
+    def reservas(self):
+        return Reserva.filter(isbn=self.isbn)
+
 
 class Reserva(Tabela):
     _table = 'reserva'

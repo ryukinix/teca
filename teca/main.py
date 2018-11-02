@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Módulo de comunicação principal.
+
+Esse módulo é onde dispara o menu principal:
+a tela de login e a tela de cadastro.
+"""
+
+
 from teca import database
 from teca import cadastro
 import getpass

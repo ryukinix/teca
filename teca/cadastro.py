@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Módulo responsável pelo cadastro do usuário pelo terminal.
+
+Utiliza a interface de comunicação com o banco de dados database.py
+para realizar as inserções.
+Faz-se uso das funções de verificação de sanidade do módulo
+check.py, como matricula, telefone, nome, endereço, senha.
+"""
+
+
 from teca import check
 from teca import database
 import getpass

@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Módulo define funções responsáveis para checar sanidade de valores.
+
+Cada função de check de sanidade deve receber uma string e retornar
+uma instância das classes filhas de ErrorMessage: sendo Ok ou Error.
+"""
+
+
 from datetime import datetime
 from teca import database
 

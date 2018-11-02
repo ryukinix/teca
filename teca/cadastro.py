@@ -137,7 +137,7 @@ def tela_cadastro_usuario():
         print(f'telefone_{i+1}: {telefone.numero}')
     ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
                         check.ask)
-    if ask == 'y':
+    if ask.lower() == 'y':
         usuario.insert()
         extra.insert()
         for telefone in telefones:

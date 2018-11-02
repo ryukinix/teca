@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mysql.connector as mysql_driver
-import hashlib
-import abc
-
 """Interface de aplicação com o SGBD MySQL
 
-Provê um simple modelo ORM (Object Relational Model)
+Provê um simples modelo ORM (Object Relational Model)
 implementado em Python.
 
 Ex.:
@@ -16,8 +12,11 @@ Ex.:
 >>> u = database.Usuario.select(394192)
 >>> u.nome
 'Manoel Vilela'
-
 """
+
+import mysql.connector as mysql_driver
+import hashlib
+import abc
 
 
 class Database(object):
@@ -73,13 +72,13 @@ class Database(object):
 class Tabela(metaclass=abc.ABCMeta):
 
     """Classe abstrata para ser base de herança
-    nas implementações de cada Tabela especialidade.
+    nas implementações de cada Tabela especializada.
 
     Provê métodos básicos para seleção, inserção, remoção e
     atualização.
     """
 
-    # Para serem redefinidas quando a herença for feita
+    # Para serem redefinidas quando a herança for feita
     _table = None
     _columns = []
     _primary_key = []
@@ -183,6 +182,7 @@ class Tabela(metaclass=abc.ABCMeta):
         params = values + primary_key_value
         return conn.commit(sql, params)
 
+
 class Usuario(Tabela):
 
     _table = 'usuario'
@@ -220,6 +220,8 @@ class Aluno(Tabela):
     _columns = ['matricula', 'data_de_conclusao_prevista',
                 'data_de_ingresso', 'cod_curso']
     _primary_key = ['matricula']
+    livros_max = 3
+    prazo_max = 15
 
     @property
     def usuario(self):
@@ -229,11 +231,14 @@ class Aluno(Tabela):
     def nome_curso(self):
         return Curso.select(self.cod_curso).nome_curso
 
+
 class Professor(Tabela):
     _table = 'professor'
     _columns = ['mat_siape', 'data_de_contratacao', 'regime_trabalho',
                 'cod_curso']
     _primary_key = ['mat_siape']
+    livros_max = 5
+    prazo_max = 30
 
     @property
     def usuario(self):
@@ -248,6 +253,8 @@ class Funcionario(Tabela):
     _table = 'funcionario'
     _columns = ['matricula']
     _primary_key = ['matricula']
+    livros_max = 4
+    prazo_max = 21
 
     @property
     def usuario(self):
@@ -256,7 +263,8 @@ class Funcionario(Tabela):
 
 class Livro(Tabela):
     _table = 'livro'
-    _columns = ['isbn', 'titulo', 'ano', 'editora', 'qt_copias', 'cod_categoria']
+    _columns = ['isbn', 'titulo', 'ano', 'editora',
+                'qt_copias', 'cod_categoria']
     _primary_key = ['isbn']
 
     @property
@@ -268,6 +276,14 @@ class Livro(Tabela):
     def categoria(self):
         cat = Categoria.select(self.cod_categoria)
         return cat.descricao
+
+    @property
+    def emprestimos(self):
+        return Emprestimo.filter(isbn=self.isbn)
+
+    @property
+    def reservas(self):
+        return Reserva.filter(isbn=self.isbn)
 
 
 class Reserva(Tabela):
@@ -293,6 +309,11 @@ class Autor(Tabela):
     _columns = ['cpf', 'nome', 'nacionalidade']
     _primary_key = ['cpf']
 
+    @property
+    def livros(self):
+        autor_livro = AutorLivro.filter(self.cpf)
+        return [Livro.select(k.livro_isbn) for k in autor_livro]
+
 
 class AutorLivro(Tabela):
     _table = 'autor_livro'
@@ -312,7 +333,6 @@ class Curso(Tabela):
     @property
     def alunos(self):
         return Aluno.filter(cod_curso=self.cod_curso)
-
 
 
 class Categoria(Tabela):

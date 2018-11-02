@@ -127,11 +127,11 @@ def tela_cadastro_usuario():
         if attr not in extra._primary_key:
             print(f"{attr}: {value}")
 
-
-    ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):', check.ask)
+    ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
+                        check.ask)
     if ask == 'y':
         usuario.insert()
-        extra.insert
+        extra.insert()
         for telefone in telefones:
             telefone.insert()
         print('USUÁRIO CADASTRADO!')

@@ -21,6 +21,7 @@ def menu_enumeracao(opcoes):
 
 
 def entrada_usuario_comum():
+    """Realiza a leitura dos campos da tabela usuario."""
     matricula = check.entrada('> Digite sua matricula\n>>> ', check.matricula)
     nome = check.entrada('> Qual o seu nome completo?\n>>> ', check.nome)
     endereco = check.entrada('> Onde você mora?\n>>> ', check.endereco)
@@ -52,6 +53,7 @@ def entrada_usuario_comum():
 
 
 def entrada_curso():
+    """Dado os cursos disponíveis, realiza leitura de um código de curso."""
     cursos = {str(c.cod_curso): c.nome_curso
               for c in database.Curso.select_all()}
     print('> Digite o código de seu curso')
@@ -60,6 +62,7 @@ def entrada_curso():
 
 
 def entrada_aluno(matricula):
+    """Realiza a leitura dos campos da tabela aluno."""
     cod_curso = entrada_curso()
     print('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)')
     data_de_ingresso = check.entrada('>>> ', check.data)
@@ -72,6 +75,7 @@ def entrada_aluno(matricula):
 
 
 def entrada_professor(matricula):
+    """Realiza a leitura dos campos da tabela professor."""
     cod_curso = entrada_curso()
 
     print('> Em que data você foi contratado pela UFC? (YYYY-MM-DD)')
@@ -91,6 +95,7 @@ def entrada_professor(matricula):
 
 
 def entrada_telefones(matricula):
+    """Realiza a leitura de N telefones."""
     telefones = []
 
     while True:
@@ -105,6 +110,7 @@ def entrada_telefones(matricula):
 
 
 def tela_cadastro_usuario():
+    """Tela principal de cadastro do usuário."""
     print('== CADASTRO DE USUÁRIO ==')
 
     usuario = entrada_usuario_comum()
@@ -126,10 +132,9 @@ def tela_cadastro_usuario():
     for attr, value in extra.items():
         if attr not in extra._primary_key:
             print(f"{attr}: {value}")
-   
+
     for i, telefone in enumerate(telefones):
-        print(f'telefone_{i+1}: {telefone.numero}')     
-                    
+        print(f'telefone_{i+1}: {telefone.numero}')
     ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
                         check.ask)
     if ask == 'y':

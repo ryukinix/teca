@@ -146,6 +146,6 @@ def tela_cadastro_usuario():
         extra.insert()
         for telefone in telefones:
             telefone.insert()
-        print('USUÁRIO CADASTRADO!')
+        print('USUÁRIO CADASTRADO COM SUCESSO!')
     else:
         print('CADASTRO CANCELADO!')

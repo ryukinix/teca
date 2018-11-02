@@ -101,12 +101,16 @@ def entrada_telefones(matricula):
     while True:
         telefone = check.entrada('> Digite um numero de telefone: ',
                                  check.telefone)
-        telefones.append(database.Telefones(matricula, telefone))
-        ask = input('> Tem mais algum telefone? (Y/N) ')
+        if telefone in telefones:
+            print("Telefone já foi digitado. Ignorado.")
+        else:
+            telefones.append(telefone)
+
+        ask = check.entrada('> Tem mais algum telefone? (Y/N) ', check.ask)
         if ask.lower() != 'y':
             break
 
-    return telefones
+    return [database.Telefones(matricula, t) for t in telefones]
 
 
 def tela_cadastro_usuario():

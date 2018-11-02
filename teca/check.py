@@ -56,14 +56,14 @@ def nome(nome):
         return Ok("Nome ok!")
 
 
-def endereco(endereco):#tratrar !! so string
+def endereco(endereco):
     if len(endereco) == 0:
         return Error("Endereço não pode ser vazio!")
     else:
         return Ok("Endereço ok!")
 
 
-def senha(senha):#tratrar !! so string
+def senha(senha):
     if len(senha) == 0:
         return Error("Senha não pode ser vazia!")
     else:
@@ -104,12 +104,3 @@ def ask(ask):
         return Error("Entrada inválida")
     else:
         return Ok("Entrada ok!")
-
-
-def telefone(telefone):
-    if not telefone.isdecimal():
-        return Error("Entrada inválida! Telefone precisa ser um número.")
-    elif len(str(telefone)) not in range(8, 12):
-        return Error("Telefone deve conter de 8 a 11 digitos.")
-    else:
-        return Ok("Telefone ok!")

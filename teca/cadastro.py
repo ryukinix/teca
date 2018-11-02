@@ -93,7 +93,6 @@ def entrada_professor(matricula):
 def entrada_telefones(matricula):
     telefones = []
 
-    telefone = check.entrada('> Digite um numero de telefone\n>>>',check.telefones)
     while True:
         telefone = check.entrada('> Digite um numero de telefone: ',
                                  check.telefone)
@@ -108,10 +107,8 @@ def entrada_telefones(matricula):
 def tela_cadastro_usuario():
     print('== CADASTRO DE USUÁRIO ==')
 
-    # Entradas para todos os tipos de usuário
     usuario = entrada_usuario_comum()
     telefones = entrada_telefones(usuario.matricula)
-    # Entradas especiais por tipo de usuário
     if usuario.tipo == 'aluno':
         extra = entrada_aluno(usuario.matricula)
     elif usuario.tipo == 'professor':
@@ -130,17 +127,13 @@ def tela_cadastro_usuario():
         if attr not in extra._primary_key:
             print(f"{attr}: {value}")
 
-    confirmacao = input('\nEstá certo os dados que você inseriu? (Y/N):')
-    # -----INICIO INSERÇÃO NO BANCO DE DADOS----- #
-    if confirmacao.lower() == 'y':
-        usuario.insert()
-        for telefone in telefones:
-            telefone.insert()
-        if usuario.tipo == 'aluno':
+    while True:
+        ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
+                         check.ask)
+        if ask == 'y':
+            usuario.insert()
             extra.insert()
-        elif usuario.tipo == 'professor':
-            extra.insert()
-        elif usuario.tipo == 'funcionario':
-            database.Funcionario(usuario.matricula).insert()
-        print('USUÁRIO CADASTRADO!')
-    # -----FIM INSERÇÃO NO BANCO DE DADOS----- #
+            for telefone in telefones:
+                telefone.insert()
+            print('USUÁRIO CADASTRADO!')
+            break

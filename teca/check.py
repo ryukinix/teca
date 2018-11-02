@@ -48,7 +48,9 @@ def matricula(matricula):
 
 
 def nome(nome):
-    if len(nome) == 0:
+    if not nome.isalpha() == True:
+         return Error("O nome deve ter apenas letras")
+    elif len(nome) == 0:
         return Error("Nome não pode ser vazio!")
     else:
         return Ok("Nome ok!")
@@ -61,7 +63,7 @@ def endereco(endereco):#tratrar !! so string
         return Ok("Endereço ok!")
 
 
-def senha(senha):#tratrar !! so string  
+def senha(senha):#tratrar !! so string
     if len(senha) == 0:
         return Error("Senha não pode ser vazia!")
     else:
@@ -96,35 +98,16 @@ def entrada(prompt, funcao_check):
             print(status)
     return entrada
 
-
-def data_de_ingresso(data_de_ingresso):
-    if data(data_de_ingresso):
-        return Ok("Data ok!")
-    else:
-        return Error("Data inválida!")
-
-def data_de_conclusao(data_de_conclusao):
-    if data(data_de_conclusao):
-        return Ok("Data ok!")
-    else:
-        return Error("Data inválida")
-
-def data_de_contracao():
-    if data(data_de_conclusao):
-        return Ok("Data ok!")
-    else:
-        return Error("Data inválida!")
-
 def ask(ask):
     if ask.lower() not in ('y','n'):
         return Error("Entrada inválida")
     else:
         return Ok("Entrada ok!")
 
-def telefones(telefones):
-    if not telefones.isdecimal():
-        return Error("Entrada inválida! Telefone precisa ser um número.")    
-    elif len(str(telefones)) not in range(8, 12):
+def telefone(telefone):
+    if not telefone.isdecimal():
+        return Error("Entrada inválida! Telefone precisa ser um número.")
+    elif len(str(telefone)) not in range(8, 12):
         return Error("Telefone deve conter de 8 a 11 digitos.")
     else:
         return Ok("Telefone ok!")

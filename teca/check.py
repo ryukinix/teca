@@ -48,8 +48,8 @@ def matricula(matricula):
 
 
 def nome(nome):
-    if not nome.isalpha():
-        return Error("O nome deve ter apenas letras")
+    if not nome.replace(' ', '').isalpha():
+        return Error("Nome deve ter apenas letras!")
     elif len(nome) == 0:
         return Error("Nome não pode ser vazio!")
     else:

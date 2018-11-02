@@ -126,7 +126,10 @@ def tela_cadastro_usuario():
     for attr, value in extra.items():
         if attr not in extra._primary_key:
             print(f"{attr}: {value}")
-
+   
+    for i, telefone in enumerate(telefones):
+        print(f'telefone_{i+1}: {telefone.numero}')     
+                    
     ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
                         check.ask)
     if ask == 'y':

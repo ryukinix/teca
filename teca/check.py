@@ -7,27 +7,27 @@ from teca import database
 
 class ErrorMessage(object):
 
-    def __init__(self, mensagem, status):
-        self.mensagem = mensagem
+    def __init__(self, message, status):
+        self.message = message
         self.status = status
 
     def __bool__(self):
         return self.status
 
     def __str__(self):
-        return self.mensagem
+        return self.message
 
 
 class Error(ErrorMessage):
 
-    def __init__(self, mensagem):
-        super().__init__(mensagem, False)
+    def __init__(self, message):
+        super().__init__(message, False)
 
 
 class Ok(ErrorMessage):
 
-    def __init__(self, mensagem):
-        super().__init__(mensagem, True)
+    def __init__(self, message):
+        super().__init__(message, True)
 
 
 def data(data_string, format='%Y-%m-%d'):

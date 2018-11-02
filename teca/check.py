@@ -48,8 +48,8 @@ def matricula(matricula):
 
 
 def nome(nome):
-    if not nome.isalpha() == True:
-         return Error("O nome deve ter apenas letras")
+    if not nome.isalpha():
+        return Error("O nome deve ter apenas letras")
     elif len(nome) == 0:
         return Error("Nome não pode ser vazio!")
     else:
@@ -98,11 +98,13 @@ def entrada(prompt, funcao_check):
             print(status)
     return entrada
 
+
 def ask(ask):
-    if ask.lower() not in ('y','n'):
+    if ask.lower() not in ('y', 'n'):
         return Error("Entrada inválida")
     else:
         return Ok("Entrada ok!")
+
 
 def telefone(telefone):
     if not telefone.isdecimal():

@@ -1,5 +1,18 @@
+# coding: utf-8
+
 from teca import database
 from datetime import datetime
+
+
+def imprimir_livro(livro):
+    for attr, value in livro.items():
+        if attr == 'cod_categoria':
+            attr = 'categoria'
+            value = livro.categoria
+        print(f"{attr}: {value}")
+    print("emprestimos: ", len(livro.emprestimos))
+    print("reservas: ", len(livro.reservas))
+
 
 def consulta_livro():
     opcoes = [
@@ -17,19 +30,11 @@ def consulta_livro():
                 break
     if opcao == 1:
         ed = input('Digite a editora: ')
-        tuplas = database.Livro.filter(editora = ed)
-        
-        for tupla in tuplas:
+        livros = database.Livro.filter(editora=ed)
+        for livro in livros:
             print("======================")
-            for nome_atributo in tupla._columns:
-                if nome_atributo == 'cod_categoria':
-                    print('Categoria: ', tupla.categoria)
-                else:  
-                    valor_atributo = getattr(tupla, nome_atributo)
-                    print(f"{nome_atributo}: {valor_atributo}")
+            imprimir_livro(livro)
         print("======================")
-
-
 
     elif opcao == 2:
         cat = database.Categoria.select_all()
@@ -47,7 +52,7 @@ def consulta_livro():
             for nome_atributo in tupla._columns:
                 if nome_atributo == 'cod_categoria':
                     print('Categoria: ', tupla.categoria)
-                else:  
+                else:
                     valor_atributo = getattr(tupla, nome_atributo)
                     print(f"{nome_atributo}: {valor_atributo}")
         print("======================")
@@ -60,7 +65,7 @@ def consulta_livro():
             for nome_atributo in tupla._columns:
                 if nome_atributo == 'cod_categoria':
                     print('Categoria: ', tupla.categoria)
-                else:  
+                else:
                     valor_atributo = getattr(tupla, nome_atributo)
                     print(f"{nome_atributo}: {valor_atributo}")
         print("======================")
@@ -72,18 +77,18 @@ def ver_emprestimo(usuario):
     for e in emprestimos:
         print("==============")
         l = database.Livro.select(e.isbn)
-        data_de_emprestimo = e.data_de_emprestimo.strftime("%d/%m/%Y")  
+        data_de_emprestimo = e.data_de_emprestimo.strftime("%d/%m/%Y")
         data_de_devolucao = e.data_de_devolucao.strftime("%d/%m/%Y")
         print("Título: ", l.titulo)
         print("ISBN: ", l.isbn)
         print("Data de empréstimo: ", data_de_emprestimo)
         print("Data de devolução: ", data_de_devolucao)
     print("==============")
-        
+
 
 def realizar_reserva(usuario):
     pass
-    
+
 
 def excluir_cadastro(usuario):
     if len(usuario.emprestimos) == 0:
@@ -122,4 +127,3 @@ def tela_usuario(mat):
                 break
         elif opcao == 4:
             consulta_livro()
-

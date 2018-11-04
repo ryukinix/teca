@@ -106,6 +106,23 @@ def telefone(telefone):
         return Ok("Telefone ok!")
 
 
+def emprestimo(usuario, livro):
+    emprestimos = usuario.emprestimos
+    extra = usuario.extra
+    if livro.disponiveis <= 0:
+        return Error("Livro indisponível para empréstimo!")
+    elif extra is None:
+        return Error("Usuário possuí dados corrompidos! Contacte o administrador.")
+    elif len(emprestimos) > extra.livros_max:
+        return Error(f"Usuário já alcançou o limite de {extra.livros_max} empréstimos!")
+    elif any(livro.isbn == e.isbn for e in emprestimos):
+        return Error("Usuário já possuí um exemplar desse livro emprestado.")
+    elif any(e.vencido for e in emprestimos):
+        return Error("Usuário possui empréstimo(s) vencido(s)!")
+
+    return Ok("Empréstimo ok!")
+
+
 def entrada(prompt, funcao_check):
     while True:
         entrada = input(prompt)

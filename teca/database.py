@@ -17,6 +17,8 @@ Ex.:
 import mysql.connector as mysql_driver
 import hashlib
 import abc
+from datetime import datetime
+from datetime import timedelta
 
 
 class Database(object):
@@ -233,6 +235,13 @@ class Usuario(Tabela):
 
     def mudar_senha(self, nova_senha):
         self.senha_hash = senha_hash(nova_senha)
+
+    def gerar_emprestimo(self, isbn):
+        mat = self.matricula
+        prazo = timedelta(days=self.extra.prazo_max)
+        data_de_emprestimo = datetime.now()
+        data_de_devolucao = data_de_emprestimo + prazo
+        return Emprestimo(mat, isbn, data_de_emprestimo, data_de_devolucao)
 
     @property
     def extra(self):

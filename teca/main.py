@@ -10,7 +10,21 @@ a tela de login e a tela de cadastro.
 
 from teca import database
 from teca import cadastro
+from teca.usuario import tela_usuario
+from teca.admin import tela_admin
+from teca import term
 import getpass
+
+
+def login_informacao(usuario):
+    print('Login efetuado como: ')
+    print('Nome: ', usuario.nome.upper())
+    print('Permissão: ', usuario.permissao.upper())
+    print('Tipo de usuário: ', usuario.tipo.upper())
+    if usuario.tipo in ('aluno', 'professor'):
+        extra = usuario.extra
+        if extra:
+            print('Curso: ', extra.nome_curso.upper())
 
 
 def tela_login():
@@ -20,12 +34,13 @@ def tela_login():
         senha = getpass.getpass(prompt='> Senha: ')
         usuario = database.login(nickname, senha)
         if usuario:
-            print('Login efetuado como: ')
-            print('Nome: ', usuario.nome.upper())
-            print('Permissão: ', usuario.permissao.upper())
-            print('Tipo de usuário: ', usuario.tipo.upper())
-            if usuario.tipo in ('aluno', 'professor'):
-                print('Curso: ', usuario.extra.nome_curso.upper())
+            login_informacao(usuario)
+            if usuario.permissao == 'administrador':
+                tela_admin()
+            elif usuario.permissao == 'bibliotecario':
+                pass
+            elif usuario.permissao == 'usuario':
+                tela_usuario(usuario.matricula)
             break
         else:
             print("Usuário ou senha inválidos! Tente novamente.")
@@ -35,22 +50,23 @@ def main():
     # ------------LOGIN INICIAL-----------------
     print("Seja bem-vindo a TECA! Pressione Ctrl-C para interromper a tela.")
     while True:
+        opcoes = {
+            '1': 'Login',
+            '2': 'Cadastro'
+        }
         try:
-            ask = input('> Já é cadastrado? (Y/N): ')
-        except KeyboardInterrupt:
+            op = term.menu_enumeracao(opcoes)
+        except (KeyboardInterrupt, EOFError):
             print("\nSaindo? Adeus então.")
             break
 
-        if (ask.lower() == 'y'):
-            try:
+        try:
+            if op == '1':
                 tela_login()
-            except KeyboardInterrupt:
-                print('\nLogin interrompido!')
-        elif (ask.lower() == 'n'):
-            try:
+            elif op == '2':
                 cadastro.tela_cadastro_usuario()
-            except KeyboardInterrupt:
-                print('\nCadastro interrompido!')
+        except (KeyboardInterrupt, EOFError):
+            print('\nOperação cancelada!')
 
 
 if __name__ == '__main__':

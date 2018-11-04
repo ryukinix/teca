@@ -12,6 +12,7 @@ from teca import database
 from teca import cadastro
 from teca.usuario import tela_usuario
 from teca.admin import tela_admin
+from teca.bibliotecario import tela_bibliotecario
 from teca import term
 import getpass
 
@@ -38,7 +39,7 @@ def tela_login():
             if usuario.permissao == 'administrador':
                 tela_admin()
             elif usuario.permissao == 'bibliotecario':
-                pass
+                tela_bibliotecario()
             elif usuario.permissao == 'usuario':
                 tela_usuario(usuario.matricula)
             break

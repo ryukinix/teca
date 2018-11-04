@@ -181,6 +181,7 @@ def tela_bibliotecario():
         try:
             op = term.menu_enumeracao(opcoes)
         except KeyboardInterrupt:
+            print()  # fix next print on terminal
             break
 
         try:

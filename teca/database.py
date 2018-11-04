@@ -335,6 +335,10 @@ class Livro(Tabela):
     def reservas(self):
         return Reserva.filter(isbn=self.isbn)
 
+    @property
+    def disponiveis(self):
+        return self.qt_copias - len(self.emprestimos)
+
 
 class Reserva(Tabela):
     _table = 'reserva'

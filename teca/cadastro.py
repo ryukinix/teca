@@ -18,9 +18,9 @@ import getpass
 
 def entrada_usuario_comum():
     """Realiza a leitura dos campos da tabela usuario."""
-    matricula = check.entrada('> Digite sua matricula\n>>> ', check.matricula)
-    nome = check.entrada('> Qual o seu nome completo?\n>>> ', check.nome)
-    endereco = check.entrada('> Onde você mora?\n>>> ', check.endereco)
+    matricula = check.entrada('> Digite sua matricula: ', check.matricula)
+    nome = check.entrada('> Digite seu nome completo: ', check.nome)
+    endereco = check.entrada('> Digite seu endereço: ', check.endereco)
     tipos = {
         '1': 'aluno',
         '2': 'professor',
@@ -135,7 +135,7 @@ def tela_cadastro_usuario():
 
     for i, telefone in enumerate(telefones):
         print(f'telefone_{i+1}: {telefone.numero}')
-    ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N):',
+    ask = check.entrada('\nEstá certo os dados que você inseriu? (Y/N): ',
                         check.ask)
     if ask.lower() == 'y':
         usuario.insert()

@@ -345,11 +345,23 @@ class Reserva(Tabela):
     _columns = ['matricula', 'isbn', 'data_de_reserva']
     _primary_key = ['matricula']
 
+    @property
+    def livro(self):
+        return Livro.select(self.isbn)
+
 
 class Emprestimo(Tabela):
     _table = 'emprestimo'
     _columns = ['matricula', 'isbn', 'data_de_emprestimo', 'data_de_devolucao']
     _primary_key = ['matricula', 'isbn']
+
+    @property
+    def livro(self):
+        return Livro.select(self.isbn)
+
+    @property
+    def vencido(self):
+        return datetime.now().date() > self.data_de_devolucao
 
 
 class Telefones(Tabela):
@@ -401,6 +413,7 @@ class Categoria(Tabela):
 
 tabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
            Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+
 
 def senha_hash(senha):
     return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()

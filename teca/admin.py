@@ -6,23 +6,11 @@ import getpass
 
 def escolher_tabela():
     print("Escolha uma das tabelas: ")
-    dic = {idx+1: tabela for idx, tabela in enumerate(database.tabelas)}
-    # equivalente:
-    # dic = {}
-    # for idx, tabela in enumerate(database.tabelas):
-    #     dic[idx+1] = tabela
-    for i, tabela in dic.items():
-        print("{}. {}".format(i, tabela._table))
-
-    # escolha da tabela
-    while True:
-        escolha = int(input(">>> "))
-        if escolha in dic:
-            break
-        else:
-            print("Escolha inválida!")
-
-    return dic[escolha]
+    tabelas = {str(idx+1): tabela
+               for idx, tabela in enumerate(database.tabelas)}
+    menu = {k: v._table for k,v in tabelas.items()}
+    escolha = term.menu_enumeracao(menu)
+    return tabelas[escolha]
 
 
 def escolher_tupla(tabela):
@@ -69,16 +57,10 @@ def admin_alterar():
     print("== ALTERAR")
     tabela_escolhida = escolher_tabela()
     instancia = escolher_tupla(tabela_escolhida)
-    atributos = {idx+1: att for idx, att in enumerate(tabela_escolhida._columns)}
+    atributos = {str(idx+1): attr
+                 for idx, attr in enumerate(tabela_escolhida._columns)}
     print("Escolha o atributo: ")
-    for idx, attr in atributos.items():
-        print(f"{idx}. {attr}")
-
-    while True:
-        escolha = int(input(">>> "))
-        if escolha in atributos:
-            break
-
+    escolha = term.menu_enumeracao(atributos)
     atributo_escolhido = atributos[escolha]
     novo_valor = input(f"Novo {atributo_escolhido}: ",)
     setattr(instancia, atributo_escolhido, novo_valor)
@@ -93,23 +75,20 @@ def admin_remover():
 
 
 def tela_admin():
-    opcoes = [
-        'Inserir',
-        'Remover',
-        'Alterar'
-    ]
-    print("Opções: ")
-    for i, op in enumerate(opcoes):
-        print("{}. {}".format(i+1, op))
-
     while True:
-        opcao = int(input(">>> "))
-        if opcao in range(1, len(opcoes) + 1):
+        opcoes = {
+            '0': 'Sair',
+            '1': 'Inserir',
+            '2': 'Remover',
+            '3': 'Alterar',
+        }
+        print("Opções: ")
+        opcao = term.menu_enumeracao(opcoes)
+        if opcao == '0':
             break
-
-    if opcao == 1:
-        admin_inserir()
-    elif opcao == 2:
-        admin_remover()
-    elif opcao == 3:
-        admin_alterar()
+        elif opcao == '1':
+            admin_inserir()
+        elif opcao == '2':
+            admin_remover()
+        elif opcao == '3':
+            admin_alterar()

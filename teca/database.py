@@ -165,6 +165,43 @@ class Tabela(metaclass=abc.ABCMeta):
             return None
         return [cls(*row) for row in result]
 
+    @classmethod
+    def search(cls, string, attrs=()):
+        """Sistema de busca genérico por atributos e substrings.
+        Retorna uma lista de candidatos possíveis dada a string passada.
+        attrs deve ser uma sequência de strings com o nome das colunas
+        de determinada tabela a serem usadas na pesquisa.
+        Ex.:
+        >>> Usuario.search('manoel', ['nome'])
+        [Usuario(matricula='394192', nome='Manoel Vilela', ...)]
+        """
+        # procura por chave
+        row = cls.select(string)
+        if row:
+            return [row]
+
+        # procure por atributo (igual)
+        for attr in attrs:
+            if attr not in cls._columns:
+                continue
+            query = {attr: string}
+            rows = cls.filter(**query)
+            if len(rows) == 1:
+                return rows
+
+        # procura por substrings para cada atributo passado
+        rows = cls.select_all()
+        candidates = []
+        string = string.lower()
+        for r in rows:
+            for attr in attrs:
+                attr_value = str(getattr(r, attr))
+                if string in attr_value.lower():
+                    candidates.append(r)
+                    break
+
+        return candidates
+
     def delete(self):
         conn = Database.connect()
         table = self._table

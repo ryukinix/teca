@@ -28,25 +28,13 @@ def escolher_tupla(tabela):
 def admin_inserir():
     print("== INSERIR")
     tabela_escolhida = escolher_tabela()
-    # inserção dos campos
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
-        entrada = input("{}: ".format(nome_atributo))
-        atributos.append(entrada)
-
-    instancia = tabela_escolhida(*atributos)
-    instancia.insert()
-
-
-def admin_inserir():
-    print("== INSERIR")
-    tabela_escolhida = escolher_tabela()
-    # inserção dos campos
-    atributos = []
-    print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
-    for nome_atributo in tabela_escolhida._columns:
-        entrada = input("{}: ".format(nome_atributo))
+        if nome_atributo == 'senha_hash':
+            entrada = database.senha_hash(getpass.getpass(prompt='senha: '))
+        else:
+            entrada = input("{}: ".format(nome_atributo))
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
@@ -62,7 +50,10 @@ def admin_alterar():
     print("Escolha o atributo: ")
     escolha = term.menu_enumeracao(atributos)
     atributo_escolhido = atributos[escolha]
-    novo_valor = input(f"Novo {atributo_escolhido}: ",)
+    if atributo_escolhido == 'senha_hash':
+        novo_valor = getpass.getpass(prompt="Nova senha: ")
+    else:
+        novo_valor = input(f"Novo {atributo_escolhido}: ",)
     setattr(instancia, atributo_escolhido, novo_valor)
     instancia.update()
 

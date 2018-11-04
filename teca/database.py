@@ -100,7 +100,11 @@ class Tabela(metaclass=abc.ABCMeta):
         attributes = ', '.join(values_format)
         return f'{cls_name}({attributes})'
 
-    __str__ = __repr__
+    def __str__(self):
+        attrs = []
+        for attr, value in self.items():
+            attrs.append(f"{attr}: {value}")
+        return '\n'.join(attrs)
 
     def items(self):
         columns = self._columns

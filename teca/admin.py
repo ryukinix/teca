@@ -1,7 +1,8 @@
 # coding: utf-8
 
 from teca import database
-
+from teca import term
+import getpass
 
 def escolher_tabela():
     print("Escolha uma das tabelas: ")
@@ -25,7 +26,7 @@ def escolher_tabela():
 
 
 def escolher_tupla(tabela):
-    imprimir_tabela(tabela)
+    term.imprimir_tabela(tabela)
     print("Escolha a tupla: ")
     chave = []
     for atributo in tabela._primary_key:
@@ -34,16 +35,6 @@ def escolher_tupla(tabela):
 
     instancia = tabela.select(chave)
     return instancia
-
-
-def imprimir_tabela(tabela):
-    tuplas = tabela.select_all()
-    for tupla in tuplas:
-        print("======================")
-        for nome_atributo in tupla._columns:
-            valor_atributo = getattr(tupla, nome_atributo)
-            print(f"{nome_atributo}: {valor_atributo}")
-    print("======================")
 
 
 def admin_inserir():

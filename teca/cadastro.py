@@ -12,21 +12,8 @@ check.py, como matricula, telefone, nome, endereço, senha.
 
 from teca import check
 from teca import database
+from teca.term import menu_enumeracao
 import getpass
-
-
-def menu_enumeracao(opcoes):
-    """Constroi um menu de enumeração como pergunta."""
-    for escolha, item in opcoes.items():
-        print(f'{escolha}. {item.upper()}')
-    while True:
-        op = input('>>> ')
-        if op in opcoes:
-            break
-        else:
-            print('Opção inválida')
-
-    return op
 
 
 def entrada_usuario_comum():

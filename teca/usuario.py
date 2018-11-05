@@ -5,6 +5,7 @@ from datetime import datetime
 
 
 def imprimir_livro(livro):
+    
     for attr, value in livro.items():
         if attr == 'cod_categoria':
             attr = 'categoria'
@@ -12,13 +13,15 @@ def imprimir_livro(livro):
         print(f"{attr}: {value}")
     print("emprestimos: ", len(livro.emprestimos))
     print("reservas: ", len(livro.reservas))
-
+    
 
 def consulta_livro():
     opcoes = [
         'Pesquisar por editora',
         'Pesquisar por categoria',
-        'Pesquisar por titulo'
+        'Pesquisar por titulo',
+        'Pesquisar por autor',
+        'Pesquisar por ano de publicação'
         ]
     print("Opções: ")
     for i, op in enumerate(opcoes):
@@ -32,7 +35,7 @@ def consulta_livro():
         ed = input('Digite a editora: ')
         livros = database.Livro.filter(editora=ed)
         for livro in livros:
-            print("======================")
+            print("======================")   
             imprimir_livro(livro)
         print("======================")
 
@@ -49,12 +52,7 @@ def consulta_livro():
         tuplas = categoria.livros
         for tupla in tuplas:
             print("======================")
-            for nome_atributo in tupla._columns:
-                if nome_atributo == 'cod_categoria':
-                    print('Categoria: ', tupla.categoria)
-                else:
-                    valor_atributo = getattr(tupla, nome_atributo)
-                    print(f"{nome_atributo}: {valor_atributo}")
+            imprimir_livro(tupla)
         print("======================")
 
     elif opcao == 3:
@@ -62,15 +60,30 @@ def consulta_livro():
         tuplas = database.Livro.filter(titulo = a)
         for tupla in tuplas:
             print("======================")
-            for nome_atributo in tupla._columns:
-                if nome_atributo == 'cod_categoria':
-                    print('Categoria: ', tupla.categoria)
-                else:
-                    valor_atributo = getattr(tupla, nome_atributo)
-                    print(f"{nome_atributo}: {valor_atributo}")
+            imprimir_livro(tupla)
         print("======================")
+    elif opcao == 4:
+        aut = input('Digite o nome do autor: ')
+        autores = database.Autor.filter(nome = aut)
+        for autor in autores:
+            livros = autor.livros
+            for livro in livros:
+                print("======================")   
+                imprimir_livro(livro)
+            print("======================")
 
-
+    elif opcao == 5:
+        a = input('Digite o ano da publicação: ')
+        livros = database.Livro.filter(ano=a)
+        for livro in livros:
+            print("======================")   
+            imprimir_livro(livro)
+        print("======================")
+    print('Deseja fazer reserva: (Y/N)')
+    op = input('>>>')
+    if op == Y or op == y:
+        pass
+        
 def ver_emprestimo(usuario):
     emprestimos = usuario.emprestimos
     print("== EMPRESTIMOS")
@@ -87,8 +100,9 @@ def ver_emprestimo(usuario):
 
 
 def realizar_reserva(usuario):
-    pass
-
+    
+    database.Reserva(usuario.matricula , 9781234567800, datetime.now()).insert()
+    
 
 def excluir_cadastro(usuario):
     if len(usuario.emprestimos) == 0:
@@ -105,7 +119,7 @@ def tela_usuario(mat):
             'Ver emprestimos',
             'Realizar reserva',
             'Excluir cadastro',
-            'Colsultar livros',
+            'Consultar livros',
             'Sair'
         ]
         print("Opções: ")

@@ -100,8 +100,16 @@ def ver_emprestimo(usuario):
 
 
 def realizar_reserva(usuario):
-    
-    database.Reserva(usuario.matricula , 9781234567800, datetime.now()).insert()
+    a = input('Digite o titulo do livro: ')
+    tuplas = database.Livro.filter(titulo = a)
+    dic = {}
+    for idx, tupla in enumerate(tuplas):
+        dic[idx+1] = tupla
+    for i, tupla in dic.items():
+        print("{}. {}".format(i,  imprimir_livro(tupla)))
+
+    #isbn = 
+    #database.Reserva(usuario.matricula , isbn, datetime.now()).insert()
     
 
 def excluir_cadastro(usuario):

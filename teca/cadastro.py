@@ -76,7 +76,7 @@ def entrada_aluno(matricula):
     print('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)')
     data_de_ingresso = check.entrada('>>> ', check.data)
     print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')
-    data_de_conclusao = check.entrada('>>> ', check.data)
+    data_de_conclusao = check.entrada('>>> ', check.data_de_conclusao)
 
     aluno = database.Aluno(matricula, data_de_conclusao,
                            data_de_ingresso, cod_curso)

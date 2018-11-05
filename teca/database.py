@@ -17,6 +17,8 @@ Ex.:
 import mysql.connector as mysql_driver
 import hashlib
 import abc
+from datetime import datetime
+from datetime import timedelta
 
 
 class Database(object):
@@ -165,6 +167,43 @@ class Tabela(metaclass=abc.ABCMeta):
             return None
         return [cls(*row) for row in result]
 
+    @classmethod
+    def search(cls, string, attrs=()):
+        """Sistema de busca genérico por atributos e substrings.
+        Retorna uma lista de candidatos possíveis dada a string passada.
+        attrs deve ser uma sequência de strings com o nome das colunas
+        de determinada tabela a serem usadas na pesquisa.
+        Ex.:
+        >>> Usuario.search('manoel', ['nome'])
+        [Usuario(matricula='394192', nome='Manoel Vilela', ...)]
+        """
+        # procura por chave
+        row = cls.select(string)
+        if row:
+            return [row]
+
+        # procure por atributo (igual)
+        for attr in attrs:
+            if attr not in cls._columns:
+                continue
+            query = {attr: string}
+            rows = cls.filter(**query)
+            if len(rows) == 1:
+                return rows
+
+        # procura por substrings para cada atributo passado
+        rows = cls.select_all()
+        candidates = []
+        string = string.lower()
+        for r in rows:
+            for attr in attrs:
+                attr_value = str(getattr(r, attr))
+                if string in attr_value.lower():
+                    candidates.append(r)
+                    break
+
+        return candidates
+
     def delete(self):
         conn = Database.connect()
         table = self._table
@@ -196,6 +235,13 @@ class Usuario(Tabela):
 
     def mudar_senha(self, nova_senha):
         self.senha_hash = senha_hash(nova_senha)
+
+    def gerar_emprestimo(self, isbn):
+        mat = self.matricula
+        prazo = timedelta(days=self.extra.prazo_max)
+        data_de_emprestimo = datetime.now()
+        data_de_devolucao = data_de_emprestimo + prazo
+        return Emprestimo(mat, isbn, data_de_emprestimo, data_de_devolucao)
 
     @property
     def extra(self):
@@ -289,17 +335,33 @@ class Livro(Tabela):
     def reservas(self):
         return Reserva.filter(isbn=self.isbn)
 
+    @property
+    def disponiveis(self):
+        return self.qt_copias - len(self.emprestimos)
+
 
 class Reserva(Tabela):
     _table = 'reserva'
     _columns = ['matricula', 'isbn', 'data_de_reserva']
     _primary_key = ['matricula']
 
+    @property
+    def livro(self):
+        return Livro.select(self.isbn)
+
 
 class Emprestimo(Tabela):
     _table = 'emprestimo'
     _columns = ['matricula', 'isbn', 'data_de_emprestimo', 'data_de_devolucao']
     _primary_key = ['matricula', 'isbn']
+
+    @property
+    def livro(self):
+        return Livro.select(self.isbn)
+
+    @property
+    def vencido(self):
+        return datetime.now().date() > self.data_de_devolucao
 
 
 class Telefones(Tabela):
@@ -351,6 +413,7 @@ class Categoria(Tabela):
 
 tabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
            Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+
 
 def senha_hash(senha):
     return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()

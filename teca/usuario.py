@@ -1,5 +1,5 @@
 # coding: utf-8
-
+from teca.bibliotecario import selecionar_livro
 from teca import database
 from datetime import datetime
 
@@ -31,9 +31,11 @@ def consulta_livro():
             opcao = int(input(">>> "))
             if opcao in range(1, len(opcoes) + 1):
                 break
+            else:
+                print("Opção invalida!")
     if opcao == 1:
         ed = input('Digite a editora: ')
-        livros = database.Livro.filter(editora=ed)
+        livros = database.Livro.search(ed, ['editora'])
         for livro in livros:
             print("======================")   
             imprimir_livro(livro)
@@ -57,14 +59,14 @@ def consulta_livro():
 
     elif opcao == 3:
         a = input('Digite o titulo do livro: ')
-        tuplas = database.Livro.filter(titulo = a)
+        tuplas = database.Livro.search(a, ['titulo'])
         for tupla in tuplas:
             print("======================")
             imprimir_livro(tupla)
         print("======================")
     elif opcao == 4:
         aut = input('Digite o nome do autor: ')
-        autores = database.Autor.filter(nome = aut)
+        autores = database.Autor.search(aut, ['nome'])
         for autor in autores:
             livros = autor.livros
             for livro in livros:
@@ -79,10 +81,8 @@ def consulta_livro():
             print("======================")   
             imprimir_livro(livro)
         print("======================")
-    print('Deseja fazer reserva: (Y/N)')
-    op = input('>>>')
-    if op == Y or op == y:
-        pass
+   
+    
         
 def ver_emprestimo(usuario):
     emprestimos = usuario.emprestimos
@@ -98,19 +98,25 @@ def ver_emprestimo(usuario):
         print("Data de devolução: ", data_de_devolucao)
     print("==============")
 
+def ver_reserva(usuario):
+    reservas = usuario.reservas
+    print("== RESERVAS")
+    for e in reservas:
+        print("==============")
+        l = database.Livro.select(e.isbn)
+        data_de_reserva = e.data_de_reserva.strftime("%d/%m/%Y")
+        print("Título: ", l.titulo)
+        print("ISBN: ", l.isbn)
+        print("Data de reserva: ", data_de_reserva)
+    print("==============")
 
 def realizar_reserva(usuario):
-    a = input('Digite o titulo do livro: ')
-    tuplas = database.Livro.filter(titulo = a)
-    dic = {}
-    for idx, tupla in enumerate(tuplas):
-        dic[idx+1] = tupla
-    for i, tupla in dic.items():
-        print("{}. {}".format(i,  imprimir_livro(tupla)))
-
-    #isbn = 
-    #database.Reserva(usuario.matricula , isbn, datetime.now()).insert()
-    
+    livro = selecionar_livro()
+    if len(livro.emprestimos) < livro.qt_copias:
+        print("Livro disponivel para emprestimo!")
+    else:
+        database.Reserva(usuario.matricula , livro.isbn, datetime.now()).insert()
+        print("Reserva realizada com sucesso!")
 
 def excluir_cadastro(usuario):
     if len(usuario.emprestimos) == 0:
@@ -128,6 +134,7 @@ def tela_usuario(mat):
             'Realizar reserva',
             'Excluir cadastro',
             'Consultar livros',
+            'ver reservas',
             'Sair'
         ]
         print("Opções: ")
@@ -149,3 +156,5 @@ def tela_usuario(mat):
                 break
         elif opcao == 4:
             consulta_livro()
+        elif opcao == 5:
+            ver_reserva(usuario)

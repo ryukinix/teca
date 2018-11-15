@@ -108,7 +108,12 @@ def emprestimo(usuario, livro):
         return Error("Usuário já possuí um exemplar desse livro emprestado.")
     elif any(e.vencido for e in emprestimos):
         return Error("Usuário possui empréstimo(s) vencido(s)!")
-
+    elif (livro.disponiveis - len(livro.reservas))<= 0:
+        res = database.Reserva.filter(matricula = usuario.matricula, isbn = livro.isbn)
+        if len(res) != 0 and res[0].data_contemplado is not None:
+            return Ok("Emprestimo ok, usuario possui reserva contemplada.")
+        else:
+            return Error("Livro disponivel apenas para reservas contempladas!")
     return Ok("Empréstimo ok!")
 
 

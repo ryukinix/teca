@@ -357,13 +357,12 @@ class Livro(Tabela):
 
 class Reserva(Tabela):
     _table = 'reserva'
-    _columns = ['matricula', 'isbn', 'data_de_reserva']
+    _columns = ['matricula', 'isbn', 'data_de_reserva', 'data_contemplado']
     _primary_key = ['matricula']
 
     @property
     def livro(self):
         return Livro.select(self.isbn)
-
 
 class Emprestimo(Tabela):
     _table = 'emprestimo'

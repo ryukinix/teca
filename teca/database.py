@@ -58,7 +58,15 @@ class Database(object):
             err_name = e.__class__.__name__
             print(f"Warning: Database.commit: {err_name}: {e}")
             status = self.conn.rollback()
+        finally:
+            cursor.close()
 
+        return status
+
+    def unsafe_commit(self, sql, params=()):
+        cursor = self.conn.cursor()
+        status = cursor.execute(sql, params)
+        cursor.close()
         return status
 
     def first_result(self, sql, params=()):
@@ -117,13 +125,16 @@ class Tabela(metaclass=abc.ABCMeta):
                 values.append(getattr(self, k))
         return list(zip(columns, values))
 
-    def insert(self):
+    def insert(self, unsafe=False):
         conn = Database.connect()
         table = self._table
         columns, values = zip(*self.items())
         params = ', '.join(['%s' for _ in range(len(columns))])
         sql = f"INSERT INTO {table} ({','.join(columns)}) VALUES ({params})"
-        return conn.commit(sql, tuple(values))
+        if unsafe:
+            return conn.unsafe_commit(sql, tuple(values))
+        else:
+            return conn.commit(sql, tuple(values))
 
     @classmethod
     def select(cls, pk, unpack=True):
@@ -280,6 +291,9 @@ class Aluno(Tabela):
     @property
     def nome_curso(self):
         return Curso.select(self.cod_curso).nome_curso
+
+    def insert(self):
+        return super().insert(unsafe=True)
 
 
 class Professor(Tabela):

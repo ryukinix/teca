@@ -14,6 +14,7 @@ from teca import check
 from teca import database
 from teca.term import menu_enumeracao
 import getpass
+from mysql.connector.errors import DatabaseError
 
 
 def entrada_usuario_comum():
@@ -63,7 +64,7 @@ def entrada_aluno(matricula):
     print('> Em que ano, mês e dia você entrou na UFC? (YYYY-MM-DD)')
     data_de_ingresso = check.entrada('>>> ', check.data)
     print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')
-    data_de_conclusao = check.entrada('>>> ', check.data_de_conclusao)
+    data_de_conclusao = check.entrada('>>> ', check.data)
 
     aluno = database.Aluno(matricula, data_de_conclusao,
                            data_de_ingresso, cod_curso)
@@ -139,9 +140,25 @@ def tela_cadastro_usuario():
                         check.ask)
     if ask.lower() == 'y':
         usuario.insert()
-        extra.insert()
         for telefone in telefones:
             telefone.insert()
-        print('USUÁRIO CADASTRADO COM SUCESSO!')
+
+        while True:
+            try:
+                extra.insert()
+                print('USUÁRIO CADASTRADO COM SUCESSO!')
+                break
+            except DatabaseError:
+                print("Data de conclusão prevista maior que a data atual.")
+                ask = input("Tentar novamente? (Y/N)")
+                if ask.lower() == 'y':
+                    print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')
+                    data_de_conclusao = check.entrada('>>> ', check.data)
+                    extra.data_de_conclusao_prevista = data_de_conclusao
+                else:
+                    print('CADASTRO INVÁLIDO! IGNORADO.')
+                    usuario.delete()
+                    break
+
     else:
         print('CADASTRO CANCELADO!')

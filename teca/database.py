@@ -66,6 +66,7 @@ class Database(object):
     def unsafe_commit(self, sql, params=()):
         cursor = self.conn.cursor()
         status = cursor.execute(sql, params)
+        self.conn.commit()
         cursor.close()
         return status
 

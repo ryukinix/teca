@@ -45,17 +45,6 @@ def data(data_string, format='%Y-%m-%d'):
         return Error("Data é inválida")
 
 
-def data_de_conclusao(data_string):
-    if not data(data_string):
-        return Error("Data é inválida!")
-    else:
-        data_conclusao = datetime.strptime(data_string, '%Y-%m-%d')
-        hoje = datetime.now()
-        if hoje > data_conclusao:
-            return Error("Aluno já alcançou data de conclusão prevista!")
-    return Ok("Data é válida.")
-
-
 def matricula(matricula):
     if not matricula.isdecimal():
         return Error("Matricula deve ser um inteiro positivo!")

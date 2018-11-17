@@ -166,6 +166,26 @@ def dar_baixa_emprestimo():
     print("DEVOLUÇÃO DO EMPRÉSTIMO REALIZADA!")
 
 
+def fila_anda():
+    conn = database.Database.connect()
+    sql = ("DELETE FROM reserva "
+           "WHERE data_contemplado is not null")
+    conn.commit(sql)
+    instances = database.Livro.select_all()
+
+    for instance in instances:
+        isb = instance.isbn
+        i = instance.qt_copias - len(instance.emprestimos)
+        sql = ("UPDATE reserva "
+               "SET data_contemplado = now()"
+               "WHERE isbn = %s"
+               "ORDER BY data_de_reserva "
+               "LIMIT %s")
+        params = (isb, i)
+        conn.commit(sql, params)
+    print("Concluído!")
+
+
 def tela_bibliotecario():
     print("== BIBLIOTECÁRIO ==")
     while True:
@@ -176,6 +196,7 @@ def tela_bibliotecario():
             '4': 'Consultar empréstimos',
             '5': 'Realizar empréstimo',
             '6': 'Dar baixa empréstimo',
+            '7': 'Atualizar fila de reserva',
         }
 
         try:
@@ -197,6 +218,8 @@ def tela_bibliotecario():
                 realizar_emprestimo()
             elif op == '6':
                 dar_baixa_emprestimo()
+            elif op == '7':
+                fila_anda()
             else:
                 print('Não implementado!')
 

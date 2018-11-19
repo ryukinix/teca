@@ -133,6 +133,7 @@ def realizar_emprestimo():
     ok = check.emprestimo(usuario, livro)
     if not ok:
         print(ok)
+        print("EMPRÉSTIMO NÃO REALIZADO!")
         return None
 
     emprestimo = usuario.gerar_emprestimo(livro.isbn)
@@ -145,7 +146,11 @@ def realizar_emprestimo():
         print("RESERVA CONSUMIDA!")
 
     emprestimo.insert()
+    data_de_devolucao = emprestimo.data_de_devolucao.strftime("%d/%m/%Y")
+    data_de_emprestimo = emprestimo.data_de_emprestimo.strftime("%d/%m/%Y")
     print("EMPRÉSTIMO REALIZADO!")
+    print("DATA DE EMPRÉSTIMO: ", data_de_emprestimo)
+    print("DATA MÁXIMA PARA DEVOLUÇÃO: ", data_de_devolucao)
 
 
 def dar_baixa_emprestimo():

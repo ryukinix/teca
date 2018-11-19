@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 -- Sun Nov 18 23:59:08 2018
 =======
 -- Mon Nov 19 00:26:56 2018
@@ -16,6 +17,9 @@
 =======
 -- Mon Nov 19 00:50:19 2018
 >>>>>>> Create the 6th view
+=======
+-- Mon Nov 19 01:05:10 2018
+>>>>>>> Add all views
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
 
@@ -356,6 +360,12 @@ CREATE TABLE IF NOT EXISTS `livro_autores` (`titulo` INT, `autores` INT);
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
+-- Placeholder table for view `view_reserva_livro`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `view_reserva_livro` (`titulo` INT, `nome_usuario` INT, `data_de_reserva` INT);
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
 -- View `view_professor_curso`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `view_professor_curso`;
@@ -437,6 +447,22 @@ FROM autor_livro
 JOIN livro ON isbn=livro_isbn 
 JOIN autor ON autor_cpf=cpf 
 GROUP BY isbn;
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- View `view_reserva_livro`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `view_reserva_livro`;
+SHOW WARNINGS;
+DROP VIEW IF EXISTS `view_reserva_livro` ;
+SHOW WARNINGS;
+USE `equipe385145`;
+CREATE  OR REPLACE VIEW view_reserva_livro AS
+SELECT titulo, nome as nome_usuario, data_de_reserva
+FROM reserva
+NATURAL JOIN livro
+NATURAL JOIN usuario
+ORDER BY data_de_reserva;
 SHOW WARNINGS;
 USE `equipe385145`;
 

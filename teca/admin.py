@@ -3,6 +3,7 @@
 from teca import database
 from teca import term
 import getpass
+from mysql.connector.errors import DatabaseError
 
 def escolher_tabela():
     print("Escolha uma das tabelas: ")
@@ -38,7 +39,11 @@ def admin_inserir():
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
-    instancia.insert()
+    try:
+        instancia.insert()
+    except DatabaseError as e:
+        print("Não foi possível completar a ação. Uma exceção foi disparada!")
+        print("Exceção: ", e)
 
 
 def admin_alterar():

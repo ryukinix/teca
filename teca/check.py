@@ -54,6 +54,12 @@ def matricula(matricula):
         return Ok("Matrícula ok!")
 
 
+def nao_vazia(entrada):
+    if len(entrada) == 0:
+        return Error("Entrada não pode ser vazia!")
+    return Ok("Entrada ok!")
+
+
 def nome(nome):
     if not nome.replace(' ', '').isalpha():
         return Error("Nome deve ter apenas letras!")

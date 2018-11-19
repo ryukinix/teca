@@ -2,14 +2,31 @@
 
 from teca import database
 from teca import term
+from teca import check
 import getpass
 from mysql.connector.errors import DatabaseError
+
+
+def admin_ler_entrada(atributo):
+    if atributo == 'senha_hash':
+        valor = getpass.getpass(prompt="senha: ")
+    elif 'data' in atributo:
+        valor = check.entrada('>>> ', check.data)
+    elif atributo == 'nickname':
+        valor = check.entrada('>>> ', check.nickname)
+    elif atributo == 'numero':
+        valor = check.entrada('>>> ', check.telefone)
+    else:
+        valor = check.entrada('>>> ', check.nao_vazia)
+
+    return valor
+
 
 def escolher_tabela():
     print("Escolha uma das tabelas: ")
     tabelas = {str(idx+1): tabela
                for idx, tabela in enumerate(database.tabelas)}
-    menu = {k: v._table for k,v in tabelas.items()}
+    menu = {k: v._table for k, v in tabelas.items()}
     escolha = term.menu_enumeracao(menu)
     return tabelas[escolha]
 
@@ -19,7 +36,8 @@ def escolher_tupla(tabela):
     print("Escolha a tupla: ")
     chave = []
     for atributo in tabela._primary_key:
-        valor = input("{}: ".format(atributo))
+        print("{}: ".format(atributo))
+        valor = admin_ler_entrada(atributo)
         chave.append(valor)
 
     instancia = tabela.select(chave)
@@ -32,10 +50,8 @@ def admin_inserir():
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
-        if nome_atributo == 'senha_hash':
-            entrada = database.senha_hash(getpass.getpass(prompt='senha: '))
-        else:
-            entrada = input("{}: ".format(nome_atributo))
+        print(f'{nome_atributo}: ')
+        entrada = admin_ler_entrada(nome_atributo)
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
@@ -55,10 +71,8 @@ def admin_alterar():
     print("Escolha o atributo: ")
     escolha = term.menu_enumeracao(atributos)
     atributo_escolhido = atributos[escolha]
-    if atributo_escolhido == 'senha_hash':
-        novo_valor = getpass.getpass(prompt="Nova senha: ")
-    else:
-        novo_valor = input(f"Novo {atributo_escolhido}: ",)
+    print(f'Novo {atributo_escolhido}: ')
+    novo_valor = admin_ler_entrada(atributo_escolhido)
     setattr(instancia, atributo_escolhido, novo_valor)
     instancia.update()
 

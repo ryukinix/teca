@@ -366,12 +366,12 @@ ORDER BY editora;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- View `livro_autores`
+-- View `view_livro_autores`
 -- -----------------------------------------------------
-DROP VIEW IF EXISTS `livro_autores` ;
+DROP VIEW IF EXISTS `view_livro_autores` ;
 SHOW WARNINGS;
 USE `equipe385145`;
-CREATE  OR REPLACE VIEW livro_autores AS
+CREATE  OR REPLACE VIEW view_livro_autores AS
 SELECT 
   titulo, 
   GROUP_CONCAT(nome ORDER BY nome SEPARATOR ', ') as autores 
@@ -392,36 +392,8 @@ SELECT titulo, nome as nome_usuario, data_de_reserva
 FROM reserva
 NATURAL JOIN livro
 NATURAL JOIN usuario
-ORDER BY data_de_reserva;
+ORDER BY titulo, data_de_reserva;
 SHOW WARNINGS;
-USE `equipe385145`;
-
-DELIMITER $$
-
-USE `equipe385145`$$
-DROP TRIGGER IF EXISTS `trg_1` $$
-SHOW WARNINGS$$
-USE `equipe385145`$$
-CREATE DEFINER = CURRENT_USER TRIGGER trg_1
-	BEFORE INSERT ON equipe385145.aluno 
-	FOR EACH ROW
-   
-BEGIN
-	
-    DECLARE msg VARCHAR(32);    
-    
-    IF NEW.data_de_conclusao_prevista < now() OR  NEW.data_de_conclusao_prevista < NEW.data_de_ingresso THEN
-        
-        SET msg = concat('Data inserida não confere!');
-        SIGNAL SQLSTATE'45000' SET message_text = msg;
-        
-	END IF; 
-
-END$$
-
-SHOW WARNINGS$$
-
-DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -884,3 +856,31 @@ INSERT INTO `reserva` (`matricula`, `isbn`, `data_de_reserva`, `data_contemplado
 
 COMMIT;
 
+USE `equipe385145`;
+
+DELIMITER $$
+
+USE `equipe385145`$$
+DROP TRIGGER IF EXISTS `trg_1` $$
+SHOW WARNINGS$$
+USE `equipe385145`$$
+CREATE DEFINER = CURRENT_USER TRIGGER trg_1
+	BEFORE INSERT ON equipe385145.aluno 
+	FOR EACH ROW
+   
+BEGIN
+	
+    DECLARE msg VARCHAR(32);    
+    
+    IF NEW.data_de_conclusao_prevista < now() OR  NEW.data_de_conclusao_prevista < NEW.data_de_ingresso THEN
+        
+        SET msg = concat('Data inserida não confere!');
+        SIGNAL SQLSTATE'45000' SET message_text = msg;
+        
+	END IF; 
+
+END$$
+
+SHOW WARNINGS$$
+
+DELIMITER ;

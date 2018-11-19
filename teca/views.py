@@ -1,15 +1,21 @@
 # coding: utf-8
 
+
+"""Módulo para listagem das views (visões) no banco de dados.
+"""
+
+
 from teca import term
 from teca import database
 from tabulate import tabulate
 
 
-def gerar_tabela(sql):
+def gerar_tabela(sql, params=()):
+    """Recebe uma consulta SQL e gera uma string formatada como tabela"""
     db = database.Database.connect()
     rows = []
     cursor = db.conn.cursor()
-    cursor.execute(sql)
+    cursor.execute(sql, params)
     for result in cursor:
         rows.append(result)
     headers = [k[0] for k in cursor.description]

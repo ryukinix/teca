@@ -84,6 +84,12 @@ def admin_remover():
     instancia.delete()
 
 
+def admin_imprimir():
+    print("== IMPRIMIR")
+    tabela_escolhida = escolher_tabela()
+    term.imprimir_tabela(tabela_escolhida)
+
+
 def tela_admin():
     while True:
         opcoes = {
@@ -91,6 +97,7 @@ def tela_admin():
             '1': 'Inserir',
             '2': 'Remover',
             '3': 'Alterar',
+            '4': 'Consultar',
         }
         print("Opções: ")
         opcao = term.menu_enumeracao(opcoes)
@@ -102,3 +109,5 @@ def tela_admin():
             admin_remover()
         elif opcao == '3':
             admin_alterar()
+        elif opcao == '4':
+            admin_imprimir()

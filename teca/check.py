@@ -107,7 +107,7 @@ def emprestimo(usuario, livro):
     if livro.disponiveis <= 0:
         return Error("Livro indisponível para empréstimo!")
     elif extra is None:
-        return Error("Usuário possuí dados corrompidos! Contacte o administrador.")
+        return Error(f"Usuário possuí dados corrompidos na tabela {usuario.tipo!r}! Contacte o administrador.")
     elif len(emprestimos) > extra.livros_max:
         return Error(f"Usuário já alcançou o limite de {extra.livros_max} empréstimos!")
     elif any(livro.isbn == e.isbn for e in emprestimos):

@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 -- Sun Nov 18 23:59:08 2018
 =======
 -- Mon Nov 19 00:26:56 2018
@@ -12,6 +13,9 @@
 =======
 -- Mon Nov 19 00:45:10 2018
 >>>>>>> Create 4/5 views
+=======
+-- Mon Nov 19 00:50:19 2018
+>>>>>>> Create the 6th view
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
 
@@ -346,6 +350,12 @@ CREATE TABLE IF NOT EXISTS `view_livro_editora` (`titulo` INT, `editora` INT);
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
+-- Placeholder table for view `livro_autores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `livro_autores` (`titulo` INT, `autores` INT);
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
 -- View `view_professor_curso`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `view_professor_curso`;
@@ -409,6 +419,24 @@ CREATE  OR REPLACE VIEW view_livro_editora AS
 SELECT titulo, editora
 FROM livro
 ORDER BY editora;
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- View `livro_autores`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `livro_autores`;
+SHOW WARNINGS;
+DROP VIEW IF EXISTS `livro_autores` ;
+SHOW WARNINGS;
+USE `equipe385145`;
+CREATE  OR REPLACE VIEW livro_autores AS
+SELECT 
+  titulo, 
+  GROUP_CONCAT(nome ORDER BY nome SEPARATOR ', ') as autores 
+FROM autor_livro 
+JOIN livro ON isbn=livro_isbn 
+JOIN autor ON autor_cpf=cpf 
+GROUP BY isbn;
 SHOW WARNINGS;
 USE `equipe385145`;
 

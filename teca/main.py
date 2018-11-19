@@ -14,6 +14,7 @@ from teca.usuario import tela_usuario
 from teca.admin import tela_admin
 from teca.bibliotecario import tela_bibliotecario
 from teca import term
+from teca import views
 import getpass
 
 
@@ -53,12 +54,14 @@ def main():
     while True:
         opcoes = {
             '1': 'Login',
-            '2': 'Cadastro'
+            '2': 'Cadastro',
+            '3': 'Views',
+            '0': 'Sair',
         }
         try:
             op = term.menu_enumeracao(opcoes)
         except (KeyboardInterrupt, EOFError):
-            print("\nSaindo? Adeus então.")
+            print()  # corrige próximo print C-c
             break
 
         try:
@@ -66,8 +69,13 @@ def main():
                 tela_login()
             elif op == '2':
                 cadastro.tela_cadastro_usuario()
+            elif op == '3':
+                views.tela_views()
+            elif op == '0':
+                break
         except (KeyboardInterrupt, EOFError):
             print('\nOperação cancelada!')
+    print("Saindo? Adeus então.")
 
 
 if __name__ == '__main__':

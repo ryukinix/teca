@@ -117,14 +117,13 @@ class Tabela(metaclass=abc.ABCMeta):
             attrs.append(f"{attr}: {value}")
         return '\n'.join(attrs)
 
+    def __iter__(self):
+        for k in self._columns:
+            if k in vars(self):
+                yield getattr(self, k)
+
     def items(self):
-        columns = self._columns
-        variables = vars(self)
-        values = []
-        for k in columns:
-            if k in variables:
-                values.append(getattr(self, k))
-        return list(zip(columns, values))
+        return list(zip(self._columns, iter(self)))
 
     def insert(self, unsafe=False):
         conn = Database.connect()

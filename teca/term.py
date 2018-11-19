@@ -4,14 +4,19 @@
 """Módulo para operações comuns de entrada/saída no terminal.
 """
 
+from tabulate import tabulate
+from teca import database
+
 
 def imprimir_tabela(tabela):
     """Imprime todas as tuplas da tabela"""
-    tuplas = tabela.select_all()
-    for tupla in tuplas:
-        print("======================")
-        print(tupla)
-    print("======================")
+    tuples = tabela.select_all()
+    if tabela == database.Usuario:
+        for u in tuples:
+            u.senha_hash = '***SECRET***'
+
+    rows = [list(row) for row in tuples]
+    print(tabulate(rows, tabela._columns, 'psql'))
 
 
 def menu_enumeracao(opcoes):

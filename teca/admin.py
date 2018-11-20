@@ -46,7 +46,7 @@ def escolher_tupla(tabela):
 
 def admin_inserir():
     print("== INSERIR")
-    tabela_escolhida = escolher_tabela(database.tabelas)
+    tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
@@ -64,9 +64,12 @@ def admin_inserir():
             tabela = database.Funcionario
         elif instancia.tipo == 'professor':
             tabela = database.Professor
-        atributos = []
+        else:
+            print("Tipo de usuário inválido!")
+            return
+        atributos = [instancia.matricula]
         print("Inserção dos atributos na tabela: ", tabela._table)
-        for nome_atributo in tabela._columns:
+        for nome_atributo in tabela._columns[1:]:
             print(f'{nome_atributo}: ')
             entrada = admin_ler_entrada(nome_atributo)
             atributos.append(entrada)
@@ -84,11 +87,12 @@ def admin_inserir():
             instancia.delete()
         return
     
-    print("INSERÇÂO FINALIZADA COM SUCESSO!")
+    if status:
+        print("INSERÇÃO FINALIZADA COM SUCESSO!")
 
 def admin_alterar():
     print("== ALTERAR")
-    tabela_escolhida = escolher_tabela(database.ttabelas)
+    tabela_escolhida = escolher_tabela(database.tabelas_todas)
     instancia = escolher_tupla(tabela_escolhida)
     atributos = {str(idx+1): attr
                  for idx, attr in enumerate(tabela_escolhida._columns)}
@@ -103,14 +107,14 @@ def admin_alterar():
 
 def admin_remover():
     print("== REMOVER")
-    tabela_escolhida = escolher_tabela(database.tabelas)
+    tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     instancia = escolher_tupla(tabela_escolhida)
     instancia.delete()
 
 
 def admin_imprimir():
     print("== IMPRIMIR")
-    tabela_escolhida = escolher_tabela(database.ttabelas)
+    tabela_escolhida = escolher_tabela(database.tabelas_todas)
     term.imprimir_tabela(tabela_escolhida)
 
 

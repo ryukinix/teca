@@ -82,6 +82,12 @@ def senha(senha):
     else:
         return Ok("Senha ok!")
 
+def cpf(cpf):
+    if len(cpf) != 11 and not cpf.isdecimal():
+        return Error("cpf deve possuir 11 dígitos!")
+    else:
+        return Ok("cpf ok!")
+
 
 def nickname(nickname):
     if len(database.Usuario.filter(nickname=nickname)) != 0:
@@ -108,7 +114,7 @@ def emprestimo(usuario, livro):
         return Error("Livro indisponível para empréstimo!")
     elif extra is None:
         return Error(f"Usuário possuí dados corrompidos na tabela {usuario.tipo!r}! Contacte o administrador.")
-    elif len(emprestimos) > extra.livros_max:
+    elif len(emprestimos) >= extra.livros_max:
         return Error(f"Usuário já alcançou o limite de {extra.livros_max} empréstimos!")
     elif any(livro.isbn == e.isbn for e in emprestimos):
         return Error("Usuário já possuí um exemplar desse livro emprestado.")

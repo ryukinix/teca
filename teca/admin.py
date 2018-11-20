@@ -16,6 +16,8 @@ def admin_ler_entrada(atributo):
         valor = check.entrada('>>> ', check.nickname)
     elif atributo == 'numero':
         valor = check.entrada('>>> ', check.telefone)
+    elif atributo == 'cpf':
+        valor = check.entrada('>>> ', check.cpf)
     else:
         valor = check.entrada('>>> ', check.nao_vazia)
 

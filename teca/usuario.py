@@ -108,14 +108,16 @@ def ver_reserva(usuario):
         print("Título: ", l.titulo)
         print("ISBN: ", l.isbn)
         print("Data de reserva: ", data_de_reserva)
+        print("Data Comtemplado: ", e.data_contemplado)
     print("==============")
 
 def realizar_reserva(usuario):
     livro = selecionar_livro()
-    if len(livro.emprestimos) < livro.qt_copias:
-        print("Livro disponivel para emprestimo!")
+    if (len(livro.emprestimos) + len(livro.emprestimos)) < livro.qt_copias:
+        database.Reserva(usuario.matricula , livro.isbn, datetime.now(), datetime.now()).insert()
+        print("Reserva realizada com sucesso!")
     else:
-        database.Reserva(usuario.matricula , livro.isbn, datetime.now()).insert()
+        database.Reserva(usuario.matricula , livro.isbn, datetime.now(), None).insert()
         print("Reserva realizada com sucesso!")
 
 def excluir_cadastro(usuario):
@@ -140,21 +142,25 @@ def tela_usuario(mat):
         print("Opções: ")
         for i, op in enumerate(opcoes):
             print("{}. {}".format(i+1, op))
-
-        while True:
-            opcao = int(input(">>> "))
-            if opcao in range(1, len(opcoes) + 1):
+           
+    
+        opcao = input(">>> ")
+        try:            
+            if opcao == '1':
+                ver_emprestimo(usuario)
+            elif opcao == '2':
+                realizar_reserva(usuario)
+            elif opcao == '3':
+                status = excluir_cadastro(usuario)
+                if status:
+                    break
+            elif opcao == '4':
+                consulta_livro()
+            elif opcao == '5':
+                ver_reserva(usuario)
+            elif opcao == '6':
                 break
-
-        if opcao == 1:
-            ver_emprestimo(usuario)
-        elif opcao == 2:
-            realizar_reserva(usuario)
-        elif opcao == 3:
-            status = excluir_cadastro(usuario)
-            if status:
-                break
-        elif opcao == 4:
-            consulta_livro()
-        elif opcao == 5:
-            ver_reserva(usuario)
+            else:
+                print("Opção inválida!")
+        except KeyboardInterrupt:
+            print("\nOperação interrompida!")

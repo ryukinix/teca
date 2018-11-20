@@ -93,7 +93,6 @@ def admin_imprimir():
 def tela_admin():
     while True:
         opcoes = {
-            '0': 'Sair',
             '1': 'Inserir',
             '2': 'Remover',
             '3': 'Alterar',
@@ -101,13 +100,16 @@ def tela_admin():
         }
         print("Opções: ")
         opcao = term.menu_enumeracao(opcoes)
-        if opcao == '0':
-            break
-        elif opcao == '1':
-            admin_inserir()
-        elif opcao == '2':
-            admin_remover()
-        elif opcao == '3':
-            admin_alterar()
-        elif opcao == '4':
-            admin_imprimir()
+        try:
+            if opcao == '0':
+                break
+            elif opcao == '1':
+                admin_inserir()
+            elif opcao == '2':
+                admin_remover()
+            elif opcao == '3':
+                admin_alterar()
+            elif opcao == '4':
+                admin_imprimir()
+        except KeyboardInterrupt:
+            print("\nOperação interrompida!")

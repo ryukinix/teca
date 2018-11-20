@@ -22,10 +22,10 @@ def admin_ler_entrada(atributo):
     return valor
 
 
-def escolher_tabela():
+def escolher_tabela(t):
     print("Escolha uma das tabelas: ")
     tabelas = {str(idx+1): tabela
-               for idx, tabela in enumerate(database.tabelas)}
+               for idx, tabela in enumerate(t)}
     menu = {k: v._table for k, v in tabelas.items()}
     escolha = term.menu_enumeracao(menu)
     return tabelas[escolha]
@@ -46,7 +46,7 @@ def escolher_tupla(tabela):
 
 def admin_inserir():
     print("== INSERIR")
-    tabela_escolhida = escolher_tabela()
+    tabela_escolhida = escolher_tabela(database.tabelas)
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
@@ -55,16 +55,29 @@ def admin_inserir():
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
+   
+    if tabela_escolhida._table == 'usuario':
+        tabela_esc = escolher_tabela(database.sub_tabelas)
+        atb = []
+        print("Inserção dos atributos na tabela: ", tabela_esc._table)
+        for nome_atributo in tabela_esc._columns:
+            print(f'{nome_atributo}: ')
+            ent = admin_ler_entrada(nome_atributo)
+            atb.append(ent)
+
+        inst = tabela_esc(*atb)
+            
     try:
         instancia.insert()
+        if tabela_escolhida._table == 'usuario':
+            inst.insert()
     except DatabaseError as e:
         print("Não foi possível completar a ação. Uma exceção foi disparada!")
         print("Exceção: ", e)
 
-
 def admin_alterar():
     print("== ALTERAR")
-    tabela_escolhida = escolher_tabela()
+    tabela_escolhida = escolher_tabela(database.ttabelas)
     instancia = escolher_tupla(tabela_escolhida)
     atributos = {str(idx+1): attr
                  for idx, attr in enumerate(tabela_escolhida._columns)}
@@ -79,14 +92,14 @@ def admin_alterar():
 
 def admin_remover():
     print("== REMOVER")
-    tabela_escolhida = escolher_tabela()
+    tabela_escolhida = escolher_tabela(database.tabelas)
     instancia = escolher_tupla(tabela_escolhida)
     instancia.delete()
 
 
 def admin_imprimir():
     print("== IMPRIMIR")
-    tabela_escolhida = escolher_tabela()
+    tabela_escolhida = escolher_tabela(database.ttabelas)
     term.imprimir_tabela(tabela_escolhida)
 
 

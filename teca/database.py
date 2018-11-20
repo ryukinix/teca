@@ -423,10 +423,11 @@ class Categoria(Tabela):
     def livros(self):
         return Livro.filter(cod_categoria=self.cod_categoria)
 
-
-tabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
+ttabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
            Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
-
+tabelas = [Usuario, Curso, Telefones,
+           Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+sub_tabelas = [ Aluno, Funcionario, Professor]
 
 def senha_hash(senha):
     return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()

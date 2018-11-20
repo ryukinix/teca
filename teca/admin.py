@@ -9,7 +9,7 @@ from mysql.connector.errors import DatabaseError
 
 def admin_ler_entrada(atributo):
     if atributo == 'senha_hash':
-        valor = getpass.getpass(prompt="senha: ")
+        valor = database.senha_hash(getpass.getpass(prompt="senha: "))
     elif 'data' in atributo:
         valor = check.entrada('>>> ', check.data)
     elif atributo == 'nickname':
@@ -50,30 +50,41 @@ def admin_inserir():
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
-        print(f'{nome_atributo}: ')
+        if nome_atributo != 'senha_hash':   
+            print(f'{nome_atributo}: ')
         entrada = admin_ler_entrada(nome_atributo)
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
    
     if tabela_escolhida._table == 'usuario':
-        tabela_esc = escolher_tabela(database.sub_tabelas)
-        atb = []
-        print("Inserção dos atributos na tabela: ", tabela_esc._table)
-        for nome_atributo in tabela_esc._columns:
+        if instancia.tipo == 'aluno':
+            tabela = database.Aluno
+        elif instancia.tipo == 'funcionario':
+            tabela = database.Funcionario
+        elif instancia.tipo == 'professor':
+            tabela = database.Professor
+        atributos = []
+        print("Inserção dos atributos na tabela: ", tabela._table)
+        for nome_atributo in tabela._columns:
             print(f'{nome_atributo}: ')
-            ent = admin_ler_entrada(nome_atributo)
-            atb.append(ent)
+            entrada = admin_ler_entrada(nome_atributo)
+            atributos.append(entrada)
 
-        inst = tabela_esc(*atb)
+        usuario_extra = tabela(*atributos)
             
     try:
-        instancia.insert()
-        if tabela_escolhida._table == 'usuario':
-            inst.insert()
+        status = instancia.insert()
+        if tabela_escolhida._table == 'usuario' and status:
+            usuario_extra.insert()    
     except DatabaseError as e:
         print("Não foi possível completar a ação. Uma exceção foi disparada!")
         print("Exceção: ", e)
+        if status:
+            instancia.delete()
+        return
+    
+    print("INSERÇÂO FINALIZADA COM SUCESSO!")
 
 def admin_alterar():
     print("== ALTERAR")

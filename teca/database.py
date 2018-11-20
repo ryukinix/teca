@@ -53,11 +53,13 @@ class Database(object):
         status = None
         try:
             cursor.execute(sql, params)
-            status = self.conn.commit()
+            self.conn.commit()
+            status = True
         except Exception as e:
             err_name = e.__class__.__name__
             print(f"Warning: Database.commit: {err_name}: {e}")
-            status = self.conn.rollback()
+            self.conn.rollback()
+            status = False
         finally:
             cursor.close()
 
@@ -425,8 +427,10 @@ class Categoria(Tabela):
 
 ttabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
            Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+
 tabelas = [Usuario, Curso, Telefones,
            Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+
 sub_tabelas = [ Aluno, Funcionario, Professor]
 
 def senha_hash(senha):

@@ -88,6 +88,11 @@ def cpf(cpf):
     else:
         return Ok("cpf ok!")
 
+def isbn(isbn):
+    if len(isbn) != 13 and not isbn.isdecimal():
+        return Error("isbn deve possuir 13 dígitos!")
+    else:
+        return Ok("isbn ok!")
 
 def nickname(nickname):
     if len(database.Usuario.filter(nickname=nickname)) != 0:

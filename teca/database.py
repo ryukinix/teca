@@ -53,11 +53,13 @@ class Database(object):
         status = None
         try:
             cursor.execute(sql, params)
-            status = self.conn.commit()
+            self.conn.commit()
+            status = True
         except Exception as e:
             err_name = e.__class__.__name__
             print(f"Warning: Database.commit: {err_name}: {e}")
-            status = self.conn.rollback()
+            self.conn.rollback()
+            status = False
         finally:
             cursor.close()
 
@@ -157,15 +159,17 @@ class Tabela(metaclass=abc.ABCMeta):
 
     @classmethod
     def filter(cls, pk=None, **kwargs):
-        if pk:
+        if pk is not None:
             return cls.select(pk, unpack=False)
-        else:
+        elif len(kwargs) > 0:
             conn = Database.connect()
             columns = cls._columns
             where_columns, values = zip(*kwargs.items())
             where = " AND ".join(map("{}=%s".format, where_columns))
             sql = f"SELECT {','.join(columns)} FROM {cls._table} WHERE {where}"
             return [cls(*r) for r in conn.query(sql, values)]
+        else:
+            raise ValueError("Database.filter: must have at least 1 arg, got 0.")  # noqa
 
     @classmethod
     def select_all(cls):
@@ -363,6 +367,7 @@ class Reserva(Tabela):
     def livro(self):
         return Livro.select(self.isbn)
 
+
 class Emprestimo(Tabela):
     _table = 'emprestimo'
     _columns = ['matricula', 'isbn', 'data_de_emprestimo', 'data_de_devolucao']
@@ -424,8 +429,11 @@ class Categoria(Tabela):
         return Livro.filter(cod_categoria=self.cod_categoria)
 
 
-tabelas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
-           Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+tabelas_todas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
+                 Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
+
+tabelas_sem_isa = [Usuario, Curso, Telefones,
+                   Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]
 
 
 def senha_hash(senha):

@@ -83,6 +83,20 @@ def senha(senha):
         return Ok("Senha ok!")
 
 
+def cpf(cpf):
+    if len(cpf) != 11 and not cpf.isdecimal():
+        return Error("cpf deve possuir 11 dígitos!")
+    else:
+        return Ok("cpf ok!")
+
+
+def isbn(isbn):
+    if len(isbn) != 13 and not isbn.isdecimal():
+        return Error("isbn deve possuir 13 dígitos!")
+    else:
+        return Ok("isbn ok!")
+
+
 def nickname(nickname):
     if len(database.Usuario.filter(nickname=nickname)) != 0:
         return Error("Nickname já existe!")
@@ -107,15 +121,16 @@ def emprestimo(usuario, livro):
     if livro.disponiveis <= 0:
         return Error("Livro indisponível para empréstimo!")
     elif extra is None:
-        return Error(f"Usuário possuí dados corrompidos na tabela {usuario.tipo!r}! Contacte o administrador.")
-    elif len(emprestimos) > extra.livros_max:
-        return Error(f"Usuário já alcançou o limite de {extra.livros_max} empréstimos!")
+        return Error(f"Usuário possuí dados corrompidos na tabela {usuario.tipo!r}! Contacte o administrador.")  # noqa
+    elif len(emprestimos) >= extra.livros_max:
+        return Error(f"Usuário já alcançou o limite de {extra.livros_max} empréstimos!")  # noqa
     elif any(livro.isbn == e.isbn for e in emprestimos):
         return Error("Usuário já possuí um exemplar desse livro emprestado.")
     elif any(e.vencido for e in emprestimos):
         return Error("Usuário possui empréstimo(s) vencido(s)!")
-    elif (livro.disponiveis - len(livro.reservas))<= 0:
-        res = database.Reserva.filter(matricula = usuario.matricula, isbn = livro.isbn)
+    elif (livro.disponiveis - len(livro.reservas)) <= 0:
+        res = database.Reserva.filter(matricula=usuario.matricula,
+                                      isbn=livro.isbn)
         if len(res) != 0 and res[0].data_contemplado is not None:
             return Ok("Emprestimo ok, usuario possui reserva contemplada.")
         else:

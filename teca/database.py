@@ -159,15 +159,17 @@ class Tabela(metaclass=abc.ABCMeta):
 
     @classmethod
     def filter(cls, pk=None, **kwargs):
-        if pk:
+        if pk is not None:
             return cls.select(pk, unpack=False)
-        else:
+        elif len(kwargs) > 0:
             conn = Database.connect()
             columns = cls._columns
             where_columns, values = zip(*kwargs.items())
             where = " AND ".join(map("{}=%s".format, where_columns))
             sql = f"SELECT {','.join(columns)} FROM {cls._table} WHERE {where}"
             return [cls(*r) for r in conn.query(sql, values)]
+        else:
+            raise ValueError("Database.filter: shall have at least one arg, got 0.")
 
     @classmethod
     def select_all(cls):

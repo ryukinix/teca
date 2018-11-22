@@ -54,13 +54,13 @@ def admin_inserir():
     atributos = []
     print("Inserção dos atributos na tabela: ", tabela_escolhida._table)
     for nome_atributo in tabela_escolhida._columns:
-        if nome_atributo != 'senha_hash':   
+        if nome_atributo != 'senha_hash':
             print(f'{nome_atributo}: ')
         entrada = admin_ler_entrada(nome_atributo)
         atributos.append(entrada)
 
     instancia = tabela_escolhida(*atributos)
-   
+
     if tabela_escolhida._table == 'usuario':
         if instancia.tipo == 'aluno':
             tabela = database.Aluno
@@ -79,18 +79,18 @@ def admin_inserir():
             atributos.append(entrada)
 
         usuario_extra = tabela(*atributos)
-            
+
     try:
         status = instancia.insert()
         if tabela_escolhida._table == 'usuario' and status:
-            usuario_extra.insert()    
+            usuario_extra.insert()
     except DatabaseError as e:
         print("Não foi possível completar a ação. Uma exceção foi disparada!")
         print("Exceção: ", e)
         if status:
             instancia.delete()
         return
-    
+
     if status:
         print("INSERÇÃO FINALIZADA COM SUCESSO!")
 
@@ -123,6 +123,7 @@ def admin_imprimir():
 
 
 def tela_admin():
+    print("== TELA DE ADMINISTRADOR ==")
     while True:
         opcoes = {
             '1': 'Inserir',

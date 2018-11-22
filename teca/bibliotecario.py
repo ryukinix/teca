@@ -192,7 +192,7 @@ def fila_anda():
 
 
 def tela_bibliotecario():
-    print("== BIBLIOTECÁRIO ==")
+    print("== TELA DE BIBLIOTECÁRIO ==")
     while True:
         opcoes = {
             '1': 'Consultar usuários',

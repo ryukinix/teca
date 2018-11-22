@@ -4,6 +4,7 @@
 from teca import term
 from teca import database
 from teca import check
+from teca import views
 
 
 def sumario_emprestimo(e):
@@ -116,14 +117,17 @@ def consultar_livros():
     imprimir_livro(livro)
 
 
-# TODO: Implementar sistema de filtro
 def consultar_reservas():
-    term.imprimir_tabela(database.Reserva)
+    views.view_reserva_livro()
 
 
-# TODO: Implementar sistema de filtro
 def consultar_emprestimos():
-    term.imprimir_tabela(database.Emprestimo)
+    sql = ('SELECT titulo, nome as nome_usuario, data_de_emprestimo, data_de_devolucao '
+           'FROM emprestimo '
+           'NATURAL JOIN livro '
+           'NATURAL JOIN usuario '
+           'ORDER BY titulo, data_de_emprestimo')
+    views.imprimir_consulta(sql)
 
 
 def realizar_emprestimo():

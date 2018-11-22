@@ -10,7 +10,7 @@ from teca import database
 from tabulate import tabulate
 
 
-def gerar_tabela(sql, params=()):
+def imprimir_consulta(sql, params=()):
     """Recebe uma consulta SQL e gera uma string formatada como tabela"""
     db = database.Database.connect()
     rows = []
@@ -20,39 +20,78 @@ def gerar_tabela(sql, params=()):
         rows.append(result)
     headers = [k[0] for k in cursor.description]
     cursor.close()
-    return tabulate(rows, headers, 'psql')
+    print(tabulate(rows, headers, 'psql'))
 
 
 def view_livro_ano():
-    tabela = gerar_tabela('SELECT * FROM view_livro_ano')
-    print(tabela)
+    imprimir_consulta('SELECT * FROM view_livro_ano')
 
 
 def view_livro_categoria():
-    tabela = gerar_tabela('SELECT * FROM view_livro_categoria')
-    print(tabela)
+    sql = 'SELECT * FROM view_livro_categoria'
+    ask = input('Deseja filtrar por categoria? (y/N) ')
+    params = ()
+    if ask.lower() == 'y':
+        print('Categorias com livro registrado')
+        imprimir_consulta('SELECT DISTINCT(nome_categoria) FROM view_livro_categoria')
+        cat = input('nome da categoria: ')
+        where = " WHERE nome_categoria LIKE %s"
+        params = ('%' + cat + '%',)
+        sql += where
+    imprimir_consulta(sql, params)
 
 
 def view_livro_editora():
-    tabela = gerar_tabela('SELECT * FROM view_livro_editora')
-    print(tabela)
+    sql = 'SELECT * FROM view_livro_editora'
+    ask = input('Deseja filtrar por editora? (y/N) ')
+    params = ()
+    if ask.lower() == 'y':
+        print('Editoras disponíveis no banco')
+        imprimir_consulta('SELECT DISTINCT(editora) FROM livro ORDER BY editora')
+        editora = input('editora: ')
+        where = " WHERE editora LIKE %s"
+        params = ('%' + editora + '%',)
+        sql += where
+    imprimir_consulta(sql, params)
 
 
-# TODO: filtro por curso
 def view_professor_curso():
-    tabela = gerar_tabela('SELECT * FROM view_professor_curso')
-    print(tabela)
+    sql = 'SELECT * FROM view_professor_curso'
+    ask = input('Deseja filtrar por curso? (y/N) ')
+    params = ()
+    if ask.lower() == 'y':
+        print('Cursos com professores')
+        cursos = ('SELECT DISTINCT(nome_curso) '
+                  'FROM view_professor_curso '
+                  'ORDER BY nome_curso')
+        imprimir_consulta(cursos)
+        curso = input('nome_curso: ')
+        where = " WHERE nome_curso LIKE %s"
+        params = ('%' + curso + '%',)
+        sql += where
+    imprimir_consulta(sql, params)
 
 
-# TODO: filtro por livro
 def view_reserva_livro():
-    tabela = gerar_tabela('SELECT * FROM view_reserva_livro')
-    print(tabela)
+    sql = 'SELECT * FROM view_reserva_livro'
+    ask = input('Deseja filtrar por livro? (y/N) ')
+    params = ()
+    if ask.lower() == 'y':
+        print('Livros com reservas')
+        livros = ('SELECT DISTINCT(isbn), titulo '
+                  'FROM view_reserva_livro '
+                  'ORDER BY titulo')
+        imprimir_consulta(livros)
+        key = input('titulo ou isbn: ')
+        key = '%' + key + '%'
+        where = " WHERE isbn LIKE %s OR titulo LIKE %s"
+        params = (key, key)
+        sql += where
+    imprimir_consulta(sql, params)
 
 
 def view_livro_autores():
-    tabela = gerar_tabela('SELECT * FROM view_livro_autores')
-    print(tabela)
+    imprimir_consulta('SELECT * FROM view_livro_autores')
 
 
 def tela_views():

@@ -113,7 +113,12 @@ def admin_remover():
     print("== REMOVER")
     tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     instancia = escolher_tupla(tabela_escolhida)
-    instancia.delete()
+    if instancia is not None:
+        deleted = instancia.delete()
+        if deleted:
+            print("TUPLA DELETADA COM SUCESSO!")
+    else:
+        print("TUPLA NÃO ENCONTRADA.")
 
 
 def admin_imprimir():

@@ -3,19 +3,16 @@ from teca.bibliotecario import selecionar_livro
 from teca import database
 from teca import term
 from datetime import datetime
+from tabulate import tabulate
 
 
-def imprimir_livro(livro):
-    for attr, value in livro.items():
-        if attr == 'cod_categoria':
-            attr = 'categoria'
-            value = livro.categoria
-        print(f"{attr}: {value}")
-    print("emprestimos: ", len(livro.emprestimos))
-    print("reservas: ", len(livro.reservas))
+def imprimir_livros(livros):
+    rows = [list(l) for l in livros]
+    headers = database.Livro._columns
+    print(tabulate(rows, headers, 'psql'))
 
 
-def consulta_livro():
+def consultar_livros():
     opcoes = {
         '1': 'Pesquisar por editora',
         '2': 'Pesquisar por categoria',
@@ -28,55 +25,38 @@ def consulta_livro():
     if opcao == '1':
         ed = input('Digite a editora: ')
         livros = database.Livro.search(ed, ['editora'])
-        for livro in livros:
-            print("======================")
-            imprimir_livro(livro)
-        print("======================")
+        imprimir_livros(livros)
 
     elif opcao == '2':
-        cat = database.Categoria.select_all()
-        for c in cat:
-            print("======================")
-            for nome_atributo in c._columns:
-                valor_atributo = getattr(c, nome_atributo)
-                print(f"{nome_atributo}: {valor_atributo}")
-        print("======================")
+        cats = database.Categoria.select_all()
+        print('Categorias: ')
+        rows = list(map(list, cats))
+        print(tabulate(rows, database.Categoria._columns, 'psql'))
+
         a = input('Digite o codigo da categoria escolhida: ')
         categoria = database.Categoria.select(a)
-        tuplas = categoria.livros
-        for tupla in tuplas:
-            print("======================")
-            imprimir_livro(tupla)
-        print("======================")
+        livros = categoria.livros
+        imprimir_livros(livros)
 
     elif opcao == '3':
         a = input('Digite o titulo do livro: ')
-        tuplas = database.Livro.search(a, ['titulo'])
-        for tupla in tuplas:
-            print("======================")
-            imprimir_livro(tupla)
-        print("======================")
+        livros = database.Livro.search(a, ['titulo'])
+        imprimir_livros(livros)
 
-    elif opcao == '4':
+    elif opcao == 4:
         aut = input('Digite o nome do autor: ')
         autores = database.Autor.search(aut, ['nome'])
         for autor in autores:
             livros = autor.livros
-            for livro in livros:
-                print("======================")
-                imprimir_livro(livro)
-            print("======================")
+            imprimir_livros(livros)
 
     elif opcao == '5':
         a = input('Digite o ano da publicação: ')
         livros = database.Livro.filter(ano=a)
-        for livro in livros:
-            print("======================")
-            imprimir_livro(livro)
-        print("======================")
+        imprimir_livros(livros)
 
 
-def ver_emprestimo(usuario):
+def consultar_emprestimos(usuario):
     emprestimos = usuario.emprestimos
     print("== EMPRESTIMOS")
     for e in emprestimos:
@@ -91,7 +71,7 @@ def ver_emprestimo(usuario):
     print("==============")
 
 
-def ver_reserva(usuario):
+def consultar_reservas(usuario):
     reservas = usuario.reservas
     print("== RESERVAS")
     for e in reservas:
@@ -147,17 +127,17 @@ def tela_usuario(mat):
         opcao = term.menu_enumeracao(opcoes)
         try:
             if opcao == '1':
-                ver_emprestimo(usuario)
+                consultar_livros()
             elif opcao == '2':
-                realizar_reserva(usuario)
+                consultar_emprestimos(usuario)
             elif opcao == '3':
+                consultar_reservas(usuario)
+            elif opcao == '4':
+                realizar_reserva(usuario)
+            elif opcao == '5':
                 status = excluir_cadastro(usuario)
                 if status:
                     break
-            elif opcao == '4':
-                consulta_livro()
-            elif opcao == '5':
-                ver_reserva(usuario)
             elif opcao == '0':
                 break
             else:

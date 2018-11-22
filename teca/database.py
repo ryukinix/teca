@@ -169,7 +169,7 @@ class Tabela(metaclass=abc.ABCMeta):
             sql = f"SELECT {','.join(columns)} FROM {cls._table} WHERE {where}"
             return [cls(*r) for r in conn.query(sql, values)]
         else:
-            raise ValueError("Database.filter: shall have at least one arg, got 0.")
+            raise ValueError("Database.filter: must have at least 1 arg, got 0.")  # noqa
 
     @classmethod
     def select_all(cls):
@@ -367,6 +367,7 @@ class Reserva(Tabela):
     def livro(self):
         return Livro.select(self.isbn)
 
+
 class Emprestimo(Tabela):
     _table = 'emprestimo'
     _columns = ['matricula', 'isbn', 'data_de_emprestimo', 'data_de_devolucao']
@@ -426,6 +427,7 @@ class Categoria(Tabela):
     @property
     def livros(self):
         return Livro.filter(cod_categoria=self.cod_categoria)
+
 
 tabelas_todas = [Usuario, Aluno, Funcionario, Professor, Curso, Telefones,
                  Emprestimo, Reserva, Categoria, Livro, AutorLivro, Autor]

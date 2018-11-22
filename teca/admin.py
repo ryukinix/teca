@@ -94,6 +94,7 @@ def admin_inserir():
     if status:
         print("INSERÇÃO FINALIZADA COM SUCESSO!")
 
+
 def admin_alterar():
     print("== ALTERAR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)

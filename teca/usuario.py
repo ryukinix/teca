@@ -108,7 +108,7 @@ def ver_reserva(usuario):
         print("Título: ", l.titulo)
         print("ISBN: ", l.isbn)
         print("Data de reserva: ", data_de_reserva)
-        print("Data Comtemplado: ", e.data_contemplado)
+        print("Data Contemplado: ", e.data_contemplado)
     print("==============")
 
 def realizar_reserva(usuario):

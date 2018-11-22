@@ -16,24 +16,16 @@ def imprimir_livro(livro):
 
 
 def consulta_livro():
-    opcoes = [
-        'Pesquisar por editora',
-        'Pesquisar por categoria',
-        'Pesquisar por titulo',
-        'Pesquisar por autor',
-        'Pesquisar por ano de publicação'
-        ]
+    opcoes = {
+        '1': 'Pesquisar por editora',
+        '2': 'Pesquisar por categoria',
+        '3': 'Pesquisar por titulo',
+        '4': 'Pesquisar por autor',
+        '5': 'Pesquisar por ano de publicação'
+    }
     print("Opções: ")
-    for i, op in enumerate(opcoes):
-        print("{}. {}".format(i+1, op))
-
-    while True:
-            opcao = int(input(">>> "))
-            if opcao in range(1, len(opcoes) + 1):
-                break
-            else:
-                print("Opção invalida!")
-    if opcao == 1:
+    opcao = term.menu_enumeracao(opcoes)
+    if opcao == '1':
         ed = input('Digite a editora: ')
         livros = database.Livro.search(ed, ['editora'])
         for livro in livros:
@@ -41,7 +33,7 @@ def consulta_livro():
             imprimir_livro(livro)
         print("======================")
 
-    elif opcao == 2:
+    elif opcao == '2':
         cat = database.Categoria.select_all()
         for c in cat:
             print("======================")
@@ -57,14 +49,15 @@ def consulta_livro():
             imprimir_livro(tupla)
         print("======================")
 
-    elif opcao == 3:
+    elif opcao == '3':
         a = input('Digite o titulo do livro: ')
         tuplas = database.Livro.search(a, ['titulo'])
         for tupla in tuplas:
             print("======================")
             imprimir_livro(tupla)
         print("======================")
-    elif opcao == 4:
+
+    elif opcao == '4':
         aut = input('Digite o nome do autor: ')
         autores = database.Autor.search(aut, ['nome'])
         for autor in autores:
@@ -74,14 +67,13 @@ def consulta_livro():
                 imprimir_livro(livro)
             print("======================")
 
-    elif opcao == 5:
+    elif opcao == '5':
         a = input('Digite o ano da publicação: ')
         livros = database.Livro.filter(ano=a)
         for livro in livros:
             print("======================")
             imprimir_livro(livro)
         print("======================")
-
 
 
 def ver_emprestimo(usuario):
@@ -97,6 +89,7 @@ def ver_emprestimo(usuario):
         print("Data de empréstimo: ", data_de_emprestimo)
         print("Data de devolução: ", data_de_devolucao)
     print("==============")
+
 
 def ver_reserva(usuario):
     reservas = usuario.reservas

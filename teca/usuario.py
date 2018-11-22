@@ -81,11 +81,11 @@ def ver_emprestimo(usuario):
     print("== EMPRESTIMOS")
     for e in emprestimos:
         print("==============")
-        l = database.Livro.select(e.isbn)
+        livro = database.Livro.select(e.isbn)
         data_de_emprestimo = e.data_de_emprestimo.strftime("%d/%m/%Y")
         data_de_devolucao = e.data_de_devolucao.strftime("%d/%m/%Y")
-        print("Título: ", l.titulo)
-        print("ISBN: ", l.isbn)
+        print("Título: ", livro.titulo)
+        print("ISBN: ", livro.isbn)
         print("Data de empréstimo: ", data_de_emprestimo)
         print("Data de devolução: ", data_de_devolucao)
     print("==============")
@@ -96,10 +96,10 @@ def ver_reserva(usuario):
     print("== RESERVAS")
     for e in reservas:
         print("==============")
-        l = database.Livro.select(e.isbn)
+        livro = database.Livro.select(e.isbn)
         data_de_reserva = e.data_de_reserva.strftime("%d/%m/%Y")
-        print("Título: ", l.titulo)
-        print("ISBN: ", l.isbn)
+        print("Título: ", livro.titulo)
+        print("ISBN: ", livro.isbn)
         print("Data de reserva: ", data_de_reserva)
         print("Data Contemplado: ", e.data_contemplado)
     print("==============")
@@ -107,21 +107,28 @@ def ver_reserva(usuario):
 
 def realizar_reserva(usuario):
     livro = selecionar_livro()
+    now = datetime.now()
+    ok = None
     if (len(livro.emprestimos) + len(livro.emprestimos)) < livro.qt_copias:
-        database.Reserva(usuario.matricula , livro.isbn, datetime.now(), datetime.now()).insert()
-        print("Reserva realizada com sucesso!")
+        res = database.Reserva(usuario.matricula, livro.isbn, now, now)
+        ok = res.insert()
     else:
-        database.Reserva(usuario.matricula , livro.isbn, datetime.now(), None).insert()
+        res = database.Reserva(usuario.matricula, livro.isbn, now, None)
+        ok = res.insert()
+
+    if ok:
         print("Reserva realizada com sucesso!")
 
 
 def excluir_cadastro(usuario):
     if len(usuario.emprestimos) == 0:
-        usuario.delete()
-        return True
-    else:
-        print('Usuario possui emprestimos pendentes!\n')
-        return False
+        ok = usuario.delete()
+        if ok:
+            print("Usuário deletado! Adeus")
+        return ok
+
+    print("Usuário possui empréstimos pendentes!")
+    return False
 
 
 def tela_usuario(mat):
@@ -129,11 +136,11 @@ def tela_usuario(mat):
     while True:
         usuario = database.Usuario.select(mat)
         opcoes = {
-            '1': 'Ver empréstimos',
-            '2': 'Realizar reserva',
-            '3': 'Excluir cadastro',
-            '4': 'Consultar livros',
-            '5': 'Ver reservas',
+            '1': 'Consultar livros',
+            '2': 'Consultar empréstimos',
+            '3': 'Consultar reservas',
+            '4': 'Realizar reserva',
+            '5': 'Excluir cadastro',
             '0': 'Sair'
         }
 

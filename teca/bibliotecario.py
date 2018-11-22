@@ -202,6 +202,7 @@ def tela_bibliotecario():
             '5': 'Realizar empréstimo',
             '6': 'Dar baixa empréstimo',
             '7': 'Atualizar fila de reserva',
+            '0': 'Sair',
         }
 
         try:
@@ -225,6 +226,8 @@ def tela_bibliotecario():
                 dar_baixa_emprestimo()
             elif op == '7':
                 fila_anda()
+            elif op == '0':
+                break
             else:
                 print('Não implementado!')
 

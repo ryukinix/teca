@@ -1,15 +1,10 @@
 # coding: utf-8
-from teca.bibliotecario import selecionar_livro
+from teca.term import selecionar_livro
+from teca.term import imprimir_livros
 from teca import database
 from teca import term
 from datetime import datetime
 from tabulate import tabulate
-
-
-def imprimir_livros(livros):
-    rows = [list(l) + [l.disponiveis] for l in livros]
-    headers = database.Livro._columns + ['disponíveis']
-    print(tabulate(rows, headers, 'psql'))
 
 
 def consultar_livros():
@@ -89,7 +84,7 @@ def realizar_reserva(usuario):
     livro = selecionar_livro()
     now = datetime.now()
     ok = None
-    if (len(livro.emprestimos) + len(livro.emprestimos)) < livro.qt_copias:
+    if (len(livro.emprestimos) + len(livro.reservas)) < livro.qt_copias:
         res = database.Reserva(usuario.matricula, livro.isbn, now, now)
         ok = res.insert()
     else:

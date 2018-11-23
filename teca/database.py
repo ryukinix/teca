@@ -15,6 +15,7 @@ Ex.:
 """
 
 import mysql.connector as mysql_driver
+from mysql.connector.errors import DatabaseError
 import hashlib
 import abc
 from datetime import datetime
@@ -40,6 +41,17 @@ class Database(object):
         if not cls.instance:
             cls.instance = Database('equipe385145', 'root', 'root')
         return cls.instance
+
+    @classmethod
+    def try_connect(cls):
+        try:
+            cls.connect()
+            status = True
+        except DatabaseError as e:
+            print("Database.try_connect: ", e)
+            status = False
+        finally:
+            return status
 
     def query(self, sql, params=()):
         cursor = self.conn.cursor()
@@ -97,6 +109,7 @@ class Tabela(metaclass=abc.ABCMeta):
     _primary_key = []
 
     def __init__(self, *args):
+        self.old = {}  # used for update
         expects = len(self._columns)
         got = len(args)
         if expects != got:
@@ -104,8 +117,10 @@ class Tabela(metaclass=abc.ABCMeta):
             a = self._columns
             err = f'{cls} expects {expects} arguments, got {got}. Args: {a!r}'
             raise TypeError(err)
+
         for k, v in zip(self._columns, args):
             setattr(self, k, v)
+            self.old[k] = v
 
     def __repr__(self):
         cls_name = self.__class__.__name__
@@ -233,7 +248,7 @@ class Tabela(metaclass=abc.ABCMeta):
         table = self._table
         columns, values = zip(*self.items())
         primary_key = self._primary_key
-        primary_key_value = tuple(getattr(self, k) for k in primary_key)
+        primary_key_value = tuple(self.old[k] for k in primary_key)
         set_stmt = ", ".join(map("{}=%s".format, columns))
         where = " AND ".join(map("{}=%s".format, primary_key))
         sql = f'UPDATE {table} SET {set_stmt} WHERE {where}'

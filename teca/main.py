@@ -15,6 +15,7 @@ from teca.admin import tela_admin
 from teca.bibliotecario import tela_bibliotecario
 from teca import term
 from teca import views
+import sys
 import getpass
 
 
@@ -50,6 +51,11 @@ def tela_login():
 
 def main():
     # ------------LOGIN INICIAL-----------------
+    status = database.Database.try_connect()
+    if not status:
+        print("Erro: Banco de dados não disponível para acesso! ")
+        sys.exit(1)
+
     print("Seja bem-vindo a TECA! Pressione Ctrl-C para interromper a tela.")
     while True:
         opcoes = {

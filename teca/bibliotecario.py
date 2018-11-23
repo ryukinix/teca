@@ -5,22 +5,11 @@ from teca import term
 from teca import database
 from teca import check
 from teca import views
-
-
-def sumario_emprestimo(e):
-    return f'{e.isbn} / {e.livro.titulo} / {e.data_de_emprestimo}'
-
-
-def sumario_reserva(r):
-    return f'{r.isbn} / {r.livro.titulo} / {r.data_de_reserva}'
-
-
-def sumario_livro(l):
-    return f'{l.isbn} / {l.titulo} / {l.editora} / {l.ano} / {l.categoria}'
-
-
-def sumario_usuario(u):
-    return f'{u.matricula} / {u.nome}'
+from teca.term import selecionar_livro, selecionar_usuario
+from teca.term import sumario_reserva
+from teca.term import sumario_emprestimo
+from teca.term import sumario_usuario
+from teca import usuario
 
 
 def imprimir_usuario(u):
@@ -38,6 +27,7 @@ def imprimir_usuario(u):
             print("curso: ", extra.nome_curso)
     print("empréstimos: ", len(emps))
     print("reservas: ", len(resv))
+    print("telefones: ", ', '.join([t.numero for t in u.telefones]))
 
     if emps:
         print("== EMPRÉSTIMOS")
@@ -71,37 +61,6 @@ def imprimir_livro(livro):
         for e in database.Reserva.filter(isbn=livro.isbn):
             u = database.Usuario.select(e.matricula)
             print("    ", sumario_usuario(u))
-
-
-def selecionar_usuario():
-    query = input("Pesquise por nome ou matrícula: ")
-    usuarios = database.Usuario.search(query, ['nome'])
-    if not usuarios:
-        print("Nenhum usuário encontrado!")
-        return selecionar_usuario()
-    usuarios_map = {str(idx+1): u for idx, u in enumerate(usuarios)}
-    usuarios_enum = {k: sumario_usuario(u)
-                     for k, u in usuarios_map.items()}
-    print("== USUÁRIOS")
-    print("   matrícula / nome")
-    op = term.menu_enumeracao(usuarios_enum)
-    return usuarios_map[op]
-
-
-def selecionar_livro():
-    query = input("Pesquise por isbn, título, editora, categoria ou ano: ")
-    livros = database.Livro.search(query, ['titulo', 'editora',
-                                           'ano', 'categoria'])
-    if not livros:
-        print("Nenhum livro encontrado!")
-        return selecionar_livro()
-    livros_map = {str(idx+1): u for idx, u in enumerate(livros)}
-    livros_enum = {k: sumario_livro(l)
-                   for k, l in livros_map.items()}
-    print("== LIVROS")
-    print("   isbn / titulo / editora / ano / categoria")
-    op = term.menu_enumeracao(livros_enum)
-    return livros_map[op]
 
 
 def consultar_usuarios():
@@ -157,6 +116,12 @@ def realizar_emprestimo():
     print("DATA MÁXIMA PARA DEVOLUÇÃO: ", data_de_devolucao)
 
 
+def realizar_reserva():
+    print("Escolha um usuário!")
+    u = selecionar_usuario()
+    usuario.realizar_reserva(u)
+
+
 def dar_baixa_emprestimo():
     print("Escolha um usuário!")
     u = selecionar_usuario()
@@ -204,8 +169,9 @@ def tela_bibliotecario():
             '3': 'Consultar reservas',
             '4': 'Consultar empréstimos',
             '5': 'Realizar empréstimo',
-            '6': 'Dar baixa empréstimo',
-            '7': 'Atualizar fila de reserva',
+            '6': 'Realizar reserva',
+            '7': 'Dar baixa empréstimo',
+            '8': 'Atualizar fila de reserva',
             '0': 'Sair',
         }
 
@@ -227,8 +193,10 @@ def tela_bibliotecario():
             elif op == '5':
                 realizar_emprestimo()
             elif op == '6':
-                dar_baixa_emprestimo()
+                realizar_reserva()
             elif op == '7':
+                dar_baixa_emprestimo()
+            elif op == '8':
                 fila_anda()
             elif op == '0':
                 break

@@ -19,7 +19,7 @@ def admin_ler_entrada(atributo):
     elif 'cpf' in atributo:
         valor = check.entrada('>>> ', check.cpf)
     elif 'isbn' in atributo:
-        valor = check.entrada('>>> ', check.isnb)
+        valor = check.entrada('>>> ', check.isbn)
     else:
         valor = check.entrada('>>> ', check.nao_vazia)
 
@@ -80,6 +80,7 @@ def admin_inserir():
 
         usuario_extra = tabela(*atributos)
 
+    status = None
     try:
         status = instancia.insert()
         if tabela_escolhida._table == 'usuario' and status:
@@ -93,13 +94,14 @@ def admin_inserir():
 
     if status:
         print("INSERÇÃO FINALIZADA COM SUCESSO!")
+    else:
+        print("INSERÇÃO NÃO REALIZADA!")
 
 
 def admin_alterar():
     print("== ALTERAR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
-    colunas = [k for k in tabela_escolhida._columns
-               if k not in tabela_escolhida._primary_key]
+    colunas = tabela_escolhida._columns
     instancia = escolher_tupla(tabela_escolhida)
     atributos = {str(idx+1): attr
                  for idx, attr in enumerate(colunas)}
@@ -113,6 +115,8 @@ def admin_alterar():
         updated = instancia.update()
         if updated:
             print("TUPLA ATUALIZADA COM SUCESSO!")
+        else:
+            print("TUPLA NÃO ATUALIZADA!")
     else:
         print("TUPLA NÃO ENCONTRADA.")
 
@@ -125,6 +129,8 @@ def admin_remover():
         deleted = instancia.delete()
         if deleted:
             print("TUPLA DELETADA COM SUCESSO!")
+        else:
+            print("TUPLA NÃO DELETADA!")
     else:
         print("TUPLA NÃO ENCONTRADA.")
 

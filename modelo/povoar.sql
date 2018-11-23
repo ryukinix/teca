@@ -338,7 +338,7 @@ CREATE  OR REPLACE VIEW view_livro_categoria AS
 SELECT titulo, descricao as nome_categoria
 FROM livro
 NATURAL JOIN categoria
-ORDER BY descricao;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -350,7 +350,7 @@ USE `equipe385145`;
 CREATE  OR REPLACE VIEW view_livro_ano AS
 SELECT titulo, ano
 FROM livro
-ORDER BY ano;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -362,7 +362,7 @@ USE `equipe385145`;
 CREATE  OR REPLACE VIEW view_livro_editora AS
 SELECT titulo, editora
 FROM livro
-ORDER BY editora;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -378,7 +378,7 @@ SELECT
 FROM autor_livro 
 JOIN livro ON isbn=livro_isbn 
 JOIN autor ON autor_cpf=cpf 
-GROUP BY isbn;
+GROUP BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -394,53 +394,6 @@ NATURAL JOIN livro
 NATURAL JOIN usuario
 ORDER BY titulo, data_de_reserva;
 SHOW WARNINGS;
-USE `equipe385145`;
-
-DELIMITER $$
-
-USE `equipe385145`$$
-DROP TRIGGER IF EXISTS `trg_2` $$
-SHOW WARNINGS$$
-USE `equipe385145`$$
-CREATE DEFINER = CURRENT_USER TRIGGER trg_2
-  BEFORE DELETE ON equipe385145.usuario
-  FOR EACH ROW
-BEGIN  
-    DECLARE msg VARCHAR(128);    
-    IF (SELECT count(*) FROM usuario WHERE permissao='administrador')=1 THEN
-        SET msg = concat('Deve existir ao menos um administrador. Não é possível apagar o último.');
-        SIGNAL SQLSTATE'45000' SET message_text = msg;        
-  END IF; 
-END$$
-
-SHOW WARNINGS$$
-
-USE `equipe385145`$$
-DROP TRIGGER IF EXISTS `trg_1` $$
-SHOW WARNINGS$$
-USE `equipe385145`$$
-CREATE DEFINER = CURRENT_USER TRIGGER trg_1
-	BEFORE INSERT ON equipe385145.aluno 
-	FOR EACH ROW
-   
-BEGIN
-	
-    DECLARE msg VARCHAR(128);    
-    
-    IF NEW.data_de_conclusao_prevista < now() THEN
-        SET msg = concat('Pela a data de conclusão, você deve está formando.');
-        SIGNAL SQLSTATE'45000' SET message_text = msg;
-	END IF; 
-        IF NEW.data_de_conclusao_prevista < NEW.data_de_ingresso THEN
-        SET msg = concat('Data de conclusão menor que a data de ingresso.');
-        SIGNAL SQLSTATE'45000' SET message_text = msg;
-	END IF; 
-
-END$$
-
-SHOW WARNINGS$$
-
-DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -676,3 +629,43 @@ INSERT INTO `reserva` (`matricula`, `isbn`, `data_de_reserva`, `data_contemplado
 
 COMMIT;
 
+USE `equipe385145`;
+
+DELIMITER $$
+
+USE `equipe385145`$$
+DROP TRIGGER IF EXISTS `trg_2` $$
+SHOW WARNINGS$$
+USE `equipe385145`$$
+CREATE DEFINER = CURRENT_USER TRIGGER trg_2
+  BEFORE DELETE ON equipe385145.usuario
+  FOR EACH ROW
+BEGIN  
+    DECLARE msg VARCHAR(128);    
+    IF (SELECT count(*) FROM usuario WHERE permissao='administrador')=1 THEN
+        SET msg = concat('Deve existir ao menos um administrador. Não é possível apagar o último.');
+        SIGNAL SQLSTATE'45000' SET message_text = msg;        
+  END IF; 
+END$$
+
+SHOW WARNINGS$$
+
+USE `equipe385145`$$
+DROP TRIGGER IF EXISTS `trg_1` $$
+SHOW WARNINGS$$
+USE `equipe385145`$$
+CREATE DEFINER = CURRENT_USER TRIGGER trg_1
+	BEFORE INSERT ON equipe385145.aluno 
+	FOR EACH ROW
+   
+BEGIN
+    DECLARE msg VARCHAR(128);    
+    IF NEW.data_de_conclusao_prevista < now() THEN
+        SET msg = concat('Data de conclusão prevista menor que a data atual. Inserção ignorada!');
+        SIGNAL SQLSTATE'45000' SET message_text = msg;
+	END IF;
+END$$
+
+SHOW WARNINGS$$
+
+DELIMITER ;

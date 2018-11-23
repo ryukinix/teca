@@ -98,16 +98,23 @@ def admin_inserir():
 def admin_alterar():
     print("== ALTERAR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
+    colunas = [k for k in tabela_escolhida._columns
+               if k not in tabela_escolhida._primary_key]
     instancia = escolher_tupla(tabela_escolhida)
     atributos = {str(idx+1): attr
-                 for idx, attr in enumerate(tabela_escolhida._columns)}
+                 for idx, attr in enumerate(colunas)}
     print("Escolha o atributo: ")
     escolha = term.menu_enumeracao(atributos)
     atributo_escolhido = atributos[escolha]
     print(f'Novo {atributo_escolhido}: ')
     novo_valor = admin_ler_entrada(atributo_escolhido)
-    setattr(instancia, atributo_escolhido, novo_valor)
-    instancia.update()
+    if instancia is not None:
+        setattr(instancia, atributo_escolhido, novo_valor)
+        updated = instancia.update()
+        if updated:
+            print("TUPLA ATUALIZADA COM SUCESSO!")
+    else:
+        print("TUPLA NÃO ENCONTRADA.")
 
 
 def admin_remover():

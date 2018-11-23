@@ -149,7 +149,7 @@ def tela_cadastro_usuario():
                 print('USUÁRIO CADASTRADO COM SUCESSO!')
                 break
             except DatabaseError:
-                print("Data de conclusão prevista maior que a data atual.")
+                print("Data de conclusão prevista menor que a data atual.")
                 ask = input("Tentar novamente? (Y/N)")
                 if ask.lower() == 'y':
                     print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')

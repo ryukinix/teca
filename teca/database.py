@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Inspirado na seguinte biblioteca: https://www.sqlalchemy.org/
+"""
+
 """Interface de aplicação com o SGBD MySQL
 
 Provê um simples modelo ORM (Object Relational Model)
@@ -12,6 +15,16 @@ Ex.:
 >>> u = database.Usuario.select(394192)
 >>> u.nome
 'Manoel Vilela'
+
+>>> from teca import database
+>>> u = database.Usuario.select(385145)
+>>> u.nome
+'Gerônimo Aguiar'
+
+>>> from teca import database
+>>> u = database.Usuario.select(389118)
+>>> u.nome
+'Samuel Hericles'
 """
 
 import mysql.connector as mysql_driver
@@ -96,7 +109,7 @@ class Database(object):
 
 class Tabela(metaclass=abc.ABCMeta):
 
-    """Classe abstrata para ser base de herança
+    """Classe abstrata para ser a BASE de herança
     nas implementações de cada Tabela especializada.
 
     Provê métodos básicos para seleção, inserção, remoção e

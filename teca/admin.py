@@ -1,5 +1,12 @@
 # coding: utf-8
 
+"""Módulo responsavel para a tela do usuário nível administrador.
+
+Utiliza as interfaces de comunicação com o banco de dados, a databse.py,
+com o módulo de operação comum de entrada e saída de usuário, a term.py e
+com o módulo de checagem de entradas do usuário, a check.py.
+"""
+
 from teca import database
 from teca import term
 from teca import check
@@ -149,6 +156,7 @@ def tela_admin():
             '2': 'Remover',
             '3': 'Alterar',
             '4': 'Consultar',
+            '0': 'Sair'
         }
         print("Opções: ")
         opcao = term.menu_enumeracao(opcoes)
@@ -165,3 +173,4 @@ def tela_admin():
                 admin_imprimir()
         except KeyboardInterrupt:
             print("\nOperação interrompida!")
+8

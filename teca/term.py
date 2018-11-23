@@ -2,6 +2,9 @@
 
 
 """Módulo para operações comuns de entrada/saída no terminal.
+
+Utiliza a biblioteca de formatação de tabelas, a tabulate além da 
+interface de comunicação de banco de dados, a database.py.
 """
 
 from tabulate import tabulate

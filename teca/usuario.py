@@ -7,8 +7,8 @@ from tabulate import tabulate
 
 
 def imprimir_livros(livros):
-    rows = [list(l) for l in livros]
-    headers = database.Livro._columns
+    rows = [list(l) + [l.disponiveis] for l in livros]
+    headers = database.Livro._columns + ['disponíveis']
     print(tabulate(rows, headers, 'psql'))
 
 

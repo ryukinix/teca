@@ -338,7 +338,7 @@ CREATE  OR REPLACE VIEW view_livro_categoria AS
 SELECT titulo, descricao as nome_categoria
 FROM livro
 NATURAL JOIN categoria
-ORDER BY descricao;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -350,7 +350,7 @@ USE `equipe385145`;
 CREATE  OR REPLACE VIEW view_livro_ano AS
 SELECT titulo, ano
 FROM livro
-ORDER BY ano;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -362,7 +362,7 @@ USE `equipe385145`;
 CREATE  OR REPLACE VIEW view_livro_editora AS
 SELECT titulo, editora
 FROM livro
-ORDER BY editora;
+ORDER BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
@@ -378,7 +378,7 @@ SELECT
 FROM autor_livro 
 JOIN livro ON isbn=livro_isbn 
 JOIN autor ON autor_cpf=cpf 
-GROUP BY isbn;
+GROUP BY titulo;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------

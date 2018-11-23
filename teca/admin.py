@@ -100,7 +100,6 @@ def admin_inserir():
 
 def admin_alterar():
     print("== ALTERAR")
-    conn = database.Database.connect()
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
     colunas = tabela_escolhida._columns
     instancia = escolher_tupla(tabela_escolhida)
@@ -112,15 +111,8 @@ def admin_alterar():
     print(f'Novo {atributo_escolhido}: ')
     novo_valor = admin_ler_entrada(atributo_escolhido)
     if instancia is not None:
-        pk_values = [f"{attr} = {valor}" for attr, valor in instancia.items()
-                     if attr in instancia._primary_key]
-        where = " AND ".join(pk_values)
-        sql = f"""UPDATE {tabela_escolhida._table}
-        SET {atributo_escolhido} = %s
-        WHERE {where}
-        """
-        params = (novo_valor,)
-        updated = conn.commit(sql, params)
+        setattr(instancia, atributo_escolhido, novo_valor)
+        updated = instancia.update()
         if updated:
             print("TUPLA ATUALIZADA COM SUCESSO!")
         else:

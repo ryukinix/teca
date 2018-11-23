@@ -108,8 +108,8 @@ def admin_alterar():
     atributo_escolhido = atributos[escolha]
     print(f'Novo {atributo_escolhido}: ')
     novo_valor = admin_ler_entrada(atributo_escolhido)
-    setattr(instancia, atributo_escolhido, novo_valor)
     if instancia is not None:
+        setattr(instancia, atributo_escolhido, novo_valor)
         updated = instancia.update()
         if updated:
             print("TUPLA ATUALIZADA COM SUCESSO!")

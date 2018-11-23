@@ -19,7 +19,7 @@ def admin_ler_entrada(atributo):
     elif 'cpf' in atributo:
         valor = check.entrada('>>> ', check.cpf)
     elif 'isbn' in atributo:
-        valor = check.entrada('>>> ', check.isnb)
+        valor = check.entrada('>>> ', check.isbn)
     else:
         valor = check.entrada('>>> ', check.nao_vazia)
 

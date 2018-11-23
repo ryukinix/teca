@@ -116,6 +116,12 @@ def realizar_emprestimo():
     print("DATA MÁXIMA PARA DEVOLUÇÃO: ", data_de_devolucao)
 
 
+def realizar_reserva():
+    print("Escolha um usuário!")
+    u = selecionar_usuario()
+    usuario.realizar_reserva(u)
+
+
 def dar_baixa_emprestimo():
     print("Escolha um usuário!")
     u = selecionar_usuario()
@@ -163,8 +169,9 @@ def tela_bibliotecario():
             '3': 'Consultar reservas',
             '4': 'Consultar empréstimos',
             '5': 'Realizar empréstimo',
-            '6': 'Dar baixa empréstimo',
-            '7': 'Atualizar fila de reserva',
+            '6': 'Realizar reserva',
+            '7': 'Dar baixa empréstimo',
+            '8': 'Atualizar fila de reserva',
             '0': 'Sair',
         }
 
@@ -186,8 +193,10 @@ def tela_bibliotecario():
             elif op == '5':
                 realizar_emprestimo()
             elif op == '6':
-                dar_baixa_emprestimo()
+                realizar_reserva()
             elif op == '7':
+                dar_baixa_emprestimo()
+            elif op == '8':
                 fila_anda()
             elif op == '0':
                 break

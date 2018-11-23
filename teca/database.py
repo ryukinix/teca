@@ -15,6 +15,7 @@ Ex.:
 """
 
 import mysql.connector as mysql_driver
+from mysql.connector.errors import DatabaseError
 import hashlib
 import abc
 from datetime import datetime
@@ -40,6 +41,17 @@ class Database(object):
         if not cls.instance:
             cls.instance = Database('equipe385145', 'root', 'root')
         return cls.instance
+
+    @classmethod
+    def try_connect(cls):
+        try:
+            cls.connect()
+            status = True
+        except DatabaseError as e:
+            print("Database.try_connect: ", e)
+            status = False
+        finally:
+            return status
 
     def query(self, sql, params=()):
         cursor = self.conn.cursor()

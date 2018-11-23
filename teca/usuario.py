@@ -84,7 +84,7 @@ def realizar_reserva(usuario):
     livro = selecionar_livro()
     now = datetime.now()
     ok = None
-    if (len(livro.emprestimos) + len(livro.emprestimos)) < livro.qt_copias:
+    if (len(livro.emprestimos) + len(livro.reservas)) < livro.qt_copias:
         res = database.Reserva(usuario.matricula, livro.isbn, now, now)
         ok = res.insert()
     else:

@@ -8,4 +8,4 @@ __author__ = ['Manoel Vilela',
 
 __email__ = ['manoel_vilela@engineer.com',
              'samuel.herilces@alu.ufc.br',
-              'geronimopereiraaguiar@gmail.com']
+             'geronimopereiraaguiar@gmail.com']

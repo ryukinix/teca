@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Inspirado na seguinte biblioteca: https://www.sqlalchemy.org/
-"""
-
 """Interface de aplicação com o SGBD MySQL
 
-Provê um simples modelo ORM (Object Relational Model)
-implementado em Python.
+Provê um simples modelo ORM (Object Relational Model) implementado em
+Python. Inspirado nas implementações famosas de ORM, como por exemplo
+a biblioteca SQLAlchemy: https://www.sqlalchemy.org/. Bem popular
+entre Web Developers.
 
 Ex.:
 
@@ -51,12 +50,27 @@ class Database(object):
 
     @classmethod
     def connect(cls):
+        """Conecta com o banco de dados com as configurações padrões.
+
+        Se uma conexão foi feita anteriormente (salva na variável instance),
+        é utilizado portanto essa conexão invés de tentar uma nova conexão.
+
+        Um Design Pattern de OO bem conhecido chamado de Singleton.
+        """
         if not cls.instance:
             cls.instance = Database('equipe385145', 'root', 'root')
         return cls.instance
 
     @classmethod
     def try_connect(cls):
+        """É realizado uma tentativa de conexão ao banco de dados.
+
+        Se tudo ocorrer bem, esse método retorna True e a instância
+        é salva na variável instance.
+
+        Se alguma falha acontecer, a exceção é mostrada no terminal
+        e o método retorna False.
+        """
         try:
             cls.connect()
             status = True
@@ -67,6 +81,10 @@ class Database(object):
             return status
 
     def query(self, sql, params=()):
+        """Realiza uma consulta SQL no banco de dados sem fazer commit.
+
+        Ideal para consultas não-modificáveis como SELECT.
+        """
         cursor = self.conn.cursor()
         cursor.execute(sql, params)
         for result in cursor:
@@ -74,6 +92,15 @@ class Database(object):
         cursor.close()
 
     def commit(self, sql, params=()):
+        """Realiza uma consulta SQL seguida de commit.
+
+        Ideal para consultas como DELETE, UPDETE e INSERT.
+        Após a execução da consulta um commit é feito.
+        Se uma exceção ocorrer, é exibida o seu conteúdo no terminal
+        e é feito um rollback.
+
+        O método retorna True se tudo ocorre bem, do contrário False.
+        """
         cursor = self.conn.cursor()
         status = None
         try:
@@ -91,6 +118,12 @@ class Database(object):
         return status
 
     def unsafe_commit(self, sql, params=()):
+        """Semelhante ao método commit no entando permite a exceção ser disparada
+
+        Esse método é utilizado para demonstrar o funcionamento do uso
+        de triggers como é o caso da Tabela Aluno que utiliza uma
+        inserção com unsafe_commit.
+        """
         cursor = self.conn.cursor()
         status = cursor.execute(sql, params)
         self.conn.commit()
@@ -98,12 +131,17 @@ class Database(object):
         return status
 
     def first_result(self, sql, params=()):
+        """Realiza uma consulta e retorna o primeiro resultado.
+
+        Se a consulta é vazia, é retornado None.
+        """
         result = list(self.query(sql, params))
         if result:
             return result[0]
         return None
 
     def close(self):
+        """Fecha a conexão com o banco de dados"""
         self.conn.close()
 
 
@@ -136,26 +174,34 @@ class Tabela(metaclass=abc.ABCMeta):
             self.old[k] = v
 
     def __repr__(self):
+        """Método interno para representação do objeto no REPL."""
         cls_name = self.__class__.__name__
         values_format = [f'{k}={v!r}' for k, v in self.items()]
         attributes = ', '.join(values_format)
         return f'{cls_name}({attributes})'
 
     def __str__(self):
+        """Método interno para conversão do objeto em string via str()"""
         attrs = []
         for attr, value in self.items():
             attrs.append(f"{attr}: {value}")
         return '\n'.join(attrs)
 
     def __iter__(self):
+        """Método para o objeto suportar iteração sobre ele."""
         for k in self._columns:
             if k in vars(self):
                 yield getattr(self, k)
 
     def items(self):
+        """Método retorna todos os atributos do objeto como (atributo, valor)"""
         return list(zip(self._columns, iter(self)))
 
     def insert(self, unsafe=False):
+        """Realiza uma inserção no banco de dados.
+
+        Se unsafe=True, utiliza Database.unsafe_commit invés de Database.commit.
+        """
         conn = Database.connect()
         table = self._table
         columns, values = zip(*self.items())
@@ -168,6 +214,12 @@ class Tabela(metaclass=abc.ABCMeta):
 
     @classmethod
     def select(cls, pk, unpack=True):
+        """Realiza uma consulta pela chave-primária no banco de dados.
+
+        Por padrão, é assumido que a seleção é pela chave primária e
+        só irá retornar um resultado com unpack=True. Do contrário, o
+        resultado é uma lista de objetos que representa a tabela da Classe.
+        """
         not_scalar = any(isinstance(pk, t) for t in [list, tuple])
         keys = len(pk) if not_scalar else 1
         conn = Database.connect()
@@ -187,6 +239,17 @@ class Tabela(metaclass=abc.ABCMeta):
 
     @classmethod
     def filter(cls, pk=None, **kwargs):
+        """Realiza uma seleção por outros atributos ou pela primary-key.
+
+        Sempre retorna uma lista de objetos, diferentemente do método
+        select.
+
+        Ex.: Seleção de um livro por titulo >>>
+        Livro.filter(titulo='Banco de Dados')
+
+        A consulta interna será gerada como um AND entre diferentes os
+        atributos passados.
+        """
         if pk is not None:
             return cls.select(pk, unpack=False)
         elif len(kwargs) > 0:
@@ -201,6 +264,7 @@ class Tabela(metaclass=abc.ABCMeta):
 
     @classmethod
     def select_all(cls):
+        """Seleciona todas as tuplas da tabela que representa a classe"""
         conn = Database.connect()
         table = cls._table
         columns = cls._columns
@@ -248,6 +312,7 @@ class Tabela(metaclass=abc.ABCMeta):
         return candidates
 
     def delete(self):
+        """Deleta a tupla que representa a própria instância do objeto."""
         conn = Database.connect()
         table = self._table
         primary_key = self._primary_key
@@ -257,6 +322,18 @@ class Tabela(metaclass=abc.ABCMeta):
         return conn.commit(sql, primary_key_value)
 
     def update(self):
+        """Atualiza a tupla a partir da instância do objeto e suas alterações.
+
+        Durante a construção do objeto, no método __init__ é salvo uma variável
+        self.old como atributo do objeto. Essa variável é utilizada para ser
+        consultada os valores iniciais do objeto. Isso é necessário quando,
+        por exemplo, o usuário deseja atualizar a chave primária de um objeto.
+
+        Como os próprios atributos do objeto são utilizados para gerar
+        a consulta UPDATE na cláusula WHERE, o meio para assegurar que
+        o valor correto associado a chave primária é o que está no
+        banco de dados, é salvando essa cópia no self.old
+        """
         conn = Database.connect()
         table = self._table
         columns, values = zip(*self.items())
@@ -277,9 +354,15 @@ class Usuario(Tabela):
     _primary_key = ['matricula']
 
     def mudar_senha(self, nova_senha):
+        """Realiza a mudança de senha de um objeto usuário.
+
+        Ainda será necessário chamar o método .update() para
+        essa mudança refletir no banco de dados.
+        """
         self.senha_hash = senha_hash(nova_senha)
 
     def gerar_emprestimo(self, isbn):
+        """Gera um empréstimo a partir de um ISBN para esse usuário"""
         mat = self.matricula
         prazo = timedelta(days=self.extra.prazo_max)
         data_de_emprestimo = datetime.now()
@@ -288,6 +371,15 @@ class Usuario(Tabela):
 
     @property
     def extra(self):
+        """Carrega as informações extras a partir do ISA feito entre as tabelas.
+
+        Usuário é especializado nas seguintes tabelas:
+        - Aluno
+        - Professor
+        - Funcionário
+
+        Cada um possui sua própria classe e seus próprios atributos.
+        """
         if self.tipo == 'aluno':
             return Aluno.select(self.matricula)
         elif self.tipo == 'professor':
@@ -297,14 +389,17 @@ class Usuario(Tabela):
 
     @property
     def telefones(self):
+        """Recupera os telefones do usuário."""
         return Telefones.filter(self.matricula)
 
     @property
     def emprestimos(self):
+        """Recupera os empréstimos do usuário."""
         return Emprestimo.filter(self.matricula)
 
     @property
     def reservas(self):
+        """Recupera as reservas do usuário"""
         return Reserva.filter(self.matricula)
 
 
@@ -316,15 +411,21 @@ class Aluno(Tabela):
     livros_max = 3
     prazo_max = 15
 
-    @property
-    def usuario(self):
-        return Usuario.select(self.matricula)
 
     @property
     def nome_curso(self):
+        """Consulta o nome de curso de um determinado aluno"""
         return Curso.select(self.cod_curso).nome_curso
 
     def insert(self):
+        """Sobrescreve o método de inserção para que seja UNSAFE.
+
+        Esse método poderá disparar uma exceção do tipo DatabaseError.
+        Ela deve ser tratada no lugar onde é chamada. Geralmente essa
+        exceção será disparada por conta do Trigger que checa se a
+        data de conclusão prevista é maior que a data atual.
+
+        """
         return super().insert(unsafe=True)
 
 
@@ -335,10 +436,6 @@ class Professor(Tabela):
     _primary_key = ['mat_siape']
     livros_max = 5
     prazo_max = 30
-
-    @property
-    def usuario(self):
-        return Usuario.select(self.mat_siape)
 
     @property
     def nome_curso(self):
@@ -352,10 +449,6 @@ class Funcionario(Tabela):
     livros_max = 4
     prazo_max = 21
 
-    @property
-    def usuario(self):
-        return Usuario.select(self.matricula)
-
 
 class Livro(Tabela):
     _table = 'livro'
@@ -365,24 +458,29 @@ class Livro(Tabela):
 
     @property
     def autores(self):
+        """Consulta os autores de um determinado livro"""
         autor_livro = AutorLivro.filter(livro_isbn=self.isbn)
         return list(map(lambda x: Autor.select(x.autor_cpf), autor_livro))
 
     @property
     def categoria(self):
+        """Consulta a descrição da categoria de um determinado livro."""
         cat = Categoria.select(self.cod_categoria)
         return cat.descricao
 
     @property
     def emprestimos(self):
+        """Consulta os empréstimos associados a um determinado livro."""
         return Emprestimo.filter(isbn=self.isbn)
 
     @property
     def reservas(self):
+        """Consulta as reservas associadas a um determinado livro."""
         return Reserva.filter(isbn=self.isbn)
 
     @property
     def disponiveis(self):
+        """Computa a quantidade de livros disponíveis na biblioteca."""
         return self.qt_copias - len(self.emprestimos)
 
 
@@ -393,6 +491,7 @@ class Reserva(Tabela):
 
     @property
     def livro(self):
+        """Seleciona o livro a partir da reserva."""
         return Livro.select(self.isbn)
 
 
@@ -403,10 +502,12 @@ class Emprestimo(Tabela):
 
     @property
     def livro(self):
+        """Seleciona o livro a partir do empréstimo."""
         return Livro.select(self.isbn)
 
     @property
     def vencido(self):
+        """Verifica se o empréstimo está vencido."""
         return datetime.now().date() > self.data_de_devolucao
 
 
@@ -423,6 +524,7 @@ class Autor(Tabela):
 
     @property
     def livros(self):
+        """Recupera os livros associados a um determinado Autor."""
         autor_livro = AutorLivro.filter(self.cpf)
         return [Livro.select(k.livro_isbn) for k in autor_livro]
 
@@ -440,10 +542,12 @@ class Curso(Tabela):
 
     @property
     def professores(self):
+        """Recupera os professores associado a uma determinada curso."""
         return Professor.filter(cod_curso=self.cod_curso)
 
     @property
     def alunos(self):
+        """Recupera os alunos associado a um determinado aluno."""
         return Aluno.filter(cod_curso=self.cod_curso)
 
 
@@ -454,6 +558,7 @@ class Categoria(Tabela):
 
     @property
     def livros(self):
+        """Recupera os livros associados a uma determinada categoria"""
         return Livro.filter(cod_categoria=self.cod_categoria)
 
 
@@ -465,10 +570,20 @@ tabelas_sem_isa = [Usuario, Curso, Telefones,
 
 
 def senha_hash(senha):
+    """Computa o hash da senha a partir do algoritmo de hashing SHA256."""
     return hashlib.sha256(senha.strip('\n').encode('utf-8')).hexdigest()
 
 
 def login(nome_usuario, senha):
+    """Realiza a tentativa de login/senha no banco de dados.
+
+    Parâmetros
+    ----------
+    nome_usuario: pode ser matricula ou nickname.
+    senha: string para ser computada após pelo hash utilizado no sistema.
+
+    Retorna uma instância da classe Usuario.
+    """
     conn = Database.connect()
     sql = ("SELECT matricula FROM usuario "
            "WHERE (nickname=%s OR matricula=%s) and senha_hash=%s")

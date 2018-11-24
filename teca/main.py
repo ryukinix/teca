@@ -58,7 +58,7 @@ def main():
     if not status:
         print("Erro: Banco de dados não disponível para acesso! ")
         sys.exit(1)
-
+    conn = database.Database.connect()
     print("Seja bem-vindo a TECA! Pressione Ctrl-C para interromper a tela.")
     while True:
         opcoes = {
@@ -85,6 +85,7 @@ def main():
         except (KeyboardInterrupt, EOFError):
             print('\nOperação cancelada!')
     print("Saindo? Adeus então.")
+    conn.close()
 
 
 if __name__ == '__main__':

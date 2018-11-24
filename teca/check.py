@@ -26,19 +26,19 @@ class ErrorMessage(object):
 
 
 class Error(ErrorMessage):
-    """Classe Error que relaciona um booleano False a uma messagem."""
+    """Classe Error que relaciona um booleano False a uma mensagem."""
     def __init__(self, message):
         super().__init__(message, False)
 
 
 class Ok(ErrorMessage):
-    """Classe Ok que relaciona um booleano True a uma messagem."""
+    """Classe Ok que relaciona um booleano True a uma mensagem."""
     def __init__(self, message):
         super().__init__(message, True)
 
 
 def data(data_string, format='%Y-%m-%d'):
-    """Método para checkar a formatação e os dados da data inserida."""
+    """Método para checar a formatação e os dados da data inserida."""
     try:
         datetime.strptime(data_string, format)
         return Ok("Data é válida")
@@ -47,7 +47,7 @@ def data(data_string, format='%Y-%m-%d'):
 
 
 def matricula(matricula):
-    """Método para checkar se a matricula é um inteiro positivo."""
+    """Método para checar se a matricula é um inteiro positivo."""
     if not matricula.isdecimal():
         return Error("Matricula deve ser um inteiro positivo!")
     elif database.Usuario.select(matricula) is not None:
@@ -57,14 +57,14 @@ def matricula(matricula):
 
 
 def nao_vazia(entrada):
-    """Método pra chekcar se uma entrada é vazia."""
+    """Método pra checar se uma entrada é vazia."""
     if len(entrada) == 0:
         return Error("Entrada não pode ser vazia!")
     return Ok("Entrada ok!")
 
 
 def nome(nome):
-    """Método para checkar se o nome do usuário contém apenas letras ou espaçamentos."""
+    """Método para checar se o nome do usuário contém apenas letras ou espaçamentos."""
     if not nome.replace(' ', '').isalpha():
         return Error("Nome deve ter apenas letras!")
     elif len(nome) == 0:
@@ -74,7 +74,7 @@ def nome(nome):
 
 
 def endereco(endereco):
-    """Método para checkar se o endereço não é um campo vazio."""
+    """Método para checar se o endereço não é um campo vazio."""
     if len(endereco) == 0:
         return Error("Endereço não pode ser vazio!")
     else:
@@ -82,7 +82,7 @@ def endereco(endereco):
 
 
 def senha(senha):
-    """Método para checkar se no campo senha foi inserido algo."""
+    """Método para checar se no campo senha foi inserido algo."""
     if len(senha) == 0:
         return Error("Senha não pode ser vazia!")
     else:
@@ -90,7 +90,7 @@ def senha(senha):
 
 
 def cpf(cpf):
-    """Metódo para checkar se o cpf contém exatamente 11 digitos."""
+    """Metódo para checar se o cpf contém exatamente 11 digitos."""
     if len(cpf) != 11 and not cpf.isdecimal():
         return Error("cpf deve possuir 11 dígitos!")
     else:
@@ -98,7 +98,7 @@ def cpf(cpf):
 
 
 def isbn(isbn):
-    """Método para checkar se o isbn contém exatamente 13 digitos."""
+    """Método para checar se o isbn contém exatamente 13 digitos."""
     if len(isbn) != 13 and not isbn.isdecimal():
         return Error("isbn deve possuir 13 dígitos!")
     else:
@@ -106,7 +106,7 @@ def isbn(isbn):
 
 
 def nickname(nickname):
-    """Método para checkar se o nickaname não está vazio ou já existe."""
+    """Método para checar se o nickaname não está vazio ou já existe."""
     if len(database.Usuario.filter(nickname=nickname)) != 0:
         return Error("Nickname já existe!")
     elif len(nickname) == 0:
@@ -116,7 +116,7 @@ def nickname(nickname):
 
 
 def telefone(telefone):
-    """Métodos para checkar se os telefones contém apenas números entre 8 e 12 digitos."""
+    """Métodos para checar se os telefones contém apenas números entre 8 e 12 digitos."""
     if not telefone.isdecimal():
         return Error("Telefone deve conter apenas dígitos!")
     elif len(telefone) not in range(8, 12):
@@ -126,7 +126,7 @@ def telefone(telefone):
 
 
 def emprestimo(usuario, livro):
-    """Método para checkar as tramitações de empréstimos do usuário."""
+    """Método para checar as tramitações de empréstimos do usuário."""
     emprestimos = usuario.emprestimos
     extra = usuario.extra
     if livro.disponiveis <= 0:
@@ -150,7 +150,13 @@ def emprestimo(usuario, livro):
 
 
 def entrada(prompt, funcao_check):
-    """Método para checkar uma exeção e exibir na tela."""
+    """Método para continuar lendo uma entrada até receber um valor válido.
+
+    Parâmetros
+    ----------
+    prompt: uma string que será apresentada para o usuário
+    funcao_check: uma função que recebe uma string e retorna Ok/Error como resultado
+    """
     while True:
         entrada = input(prompt)
         status = funcao_check(entrada)
@@ -162,7 +168,7 @@ def entrada(prompt, funcao_check):
 
 
 def ask(ask):
-    """Método para checkar se digitou y/Y ou n/N."""
+    """Método para checar se digitou y/Y ou n/N."""
     if ask.lower() not in ('y', 'n'):
         return Error("Entrada inválida")
     else:

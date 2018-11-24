@@ -16,7 +16,7 @@ from teca.term import imprimir_livros
 
 
 def consultar_livros():
-    """Listas as pesquisas possiveis para um livro."""
+    """Lista os tipos de pesquisa possíveis para um livro."""
     opcoes = {
         '1': 'Pesquisar por editora',
         '2': 'Pesquisar por categoria',
@@ -77,7 +77,7 @@ def consultar_emprestimos(usuario):
 
 
 def consultar_reservas(usuario):
-    """Faz a consulta por meio de listagem."""
+    """Faz a consulta de reservas por meio de listagem."""
     reservas = usuario.reservas
     print("== RESERVAS")
     for e in reservas:
@@ -87,12 +87,21 @@ def consultar_reservas(usuario):
         print("Título: ", livro.titulo)
         print("ISBN: ", livro.isbn)
         print("Data de reserva: ", data_de_reserva)
-        print("Data Contemplado: ", e.data_contemplado)
+        print("Data contemplado: ", e.data_contemplado)
     print("==============")
 
 
 def realizar_reserva(usuario):
-    """Realiza a reserva, gera a data feita a reserva, a contemplada e verifica a disponibilidade do livro."""
+    """Realiza a reserva de um determinado livro para um usuário.
+
+    Se um determinado livro ainda tiver livros disponíveis,
+    considerando as reservas deste mesmo, a data contemplada é
+    definida como a mesma data de reserva no momento de cadastro
+    desse registro no banco de dados.
+
+    Do contrário, a data contemplada é NULL e será contemplada pelo
+    bibliotecário num evento do tipo que faz a fila de reserva andar.
+    """
     livro = selecionar_livro()
     now = datetime.now()
     ok = None
@@ -105,6 +114,8 @@ def realizar_reserva(usuario):
 
     if ok:
         print("Reserva realizada com sucesso!")
+    else:
+        print("Reserva não pôde ser efetuada!")
 
 
 def excluir_cadastro(usuario):
@@ -112,10 +123,10 @@ def excluir_cadastro(usuario):
     if len(usuario.emprestimos) == 0:
         ok = usuario.delete()
         if ok:
-            print("Usuário deletado! Adeus")
+            print("Usuário deletado! Adeus!!!")
         return ok
 
-    print("Usuário possui empréstimos pendentes!")
+    print("Usuário possui empréstimos pendentes! Devolva seus livros antes!")
     return False
 
 

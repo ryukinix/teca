@@ -12,22 +12,22 @@ from teca import database
 
 
 def sumario_emprestimo(e):
-    """Exibi os empréstimos feito no sistema."""
+    """Exibi um empréstimo feito no sistema."""
     return f'{e.isbn} / {e.livro.titulo} / {e.data_de_emprestimo}'
 
 
 def sumario_reserva(r):
-    """Exibe as reservas feitas no sistema."""
+    """Exibe uma reserva feita no sistema."""
     return f'{r.isbn} / {r.livro.titulo} / {r.data_de_reserva}'
 
 
 def sumario_livro(l):
-    """Exibe os livros disponibilizado na biblioteca."""
-    return f'{l.isbn} / {l.titulo} / {l.editora} / {l.ano} / {l.categoria}'
+    """Exibe os atributos de um livro da biblioteca."""
+    return f'{l.isbn} / {l.titulo} / {l.editora} / {l.ano} / {l.categoria} / {l.disponiveis}'
 
 
 def sumario_usuario(u):
-    """Exibe apenas o usuário e sua matricula. """
+    """Exibe apenas o usuário e sua matricula."""
     return f'{u.matricula} / {u.nome}'
 
 
@@ -43,7 +43,15 @@ def imprimir_tabela(tabela):
 
 
 def menu_enumeracao(opcoes):
-    """Constroi um menu de enumeração como pergunta."""
+    """Constroi um menu de enumeração como pergunta.
+
+    Parâmetros
+    ---------
+    opcoes: deve ser um dicionário onde a chave é uma string como a
+    resposta esperada
+
+    Ex.: opcoes = {'1': 'Opcao A', '2': 'Opcao B'}
+    """
     for escolha, item in opcoes.items():
         print(f'{escolha}. {item.upper()}')
     while True:
@@ -57,7 +65,7 @@ def menu_enumeracao(opcoes):
 
 
 def imprimir_livros(livros):
-    """Realiza a listagem e impressão dos livros disponiveis."""
+    """Realiza a listagem e impressão dos livros disponíveis."""
     rows = [list(l) + [l.disponiveis] for l in livros]
     headers = database.Livro._columns + ['disponíveis']
     print(tabulate(rows, headers, 'psql'))
@@ -91,6 +99,6 @@ def selecionar_livro():
     livros_enum = {k: sumario_livro(l)
                    for k, l in livros_map.items()}
     print("== LIVROS")
-    print("   isbn / titulo / editora / ano / categoria")
+    print("   isbn / titulo / editora / ano / categoria / disponíveis")
     op = menu_enumeracao(livros_enum)
     return livros_map[op]

@@ -1,10 +1,11 @@
 # coding: utf-8
 
-"""Módulo responsavel para a tela do usuário nível administrador.
+"""Módulo responsável para a tela do usuário com permissão de administrador.
 
-Utiliza as interfaces de comunicação com o banco de dados, a databse.py,
-com o módulo de operação comum de entrada e saída de usuário, a term.py e
-com o módulo de checagem de entradas do usuário, a check.py.
+Utiliza:
++ módulo de comunicação com o banco de dados definida em database.py
++ módulo de operação de E/S definida em term.py
++ módulo de checagem de entradas do usuário definida em check.py.
 """
 
 from teca import database
@@ -59,7 +60,7 @@ def escolher_tupla(tabela):
 
 
 def admin_inserir():
-    """Inseri campos para um novo usário, podendo ser tipos diferentes."""
+    """Insere campos para um novo usuário: aluno, professor, funcionario."""
     print("== INSERIR")
     tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     atributos = []
@@ -149,14 +150,14 @@ def admin_remover():
 
 
 def admin_imprimir():
-    """Imprimi a tabela escolhida usando listagem do módulo database.py."""
+    """Imprime a tabela escolhida usando listagem do módulo database.py."""
     print("== IMPRIMIR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
     term.imprimir_tabela(tabela_escolhida)
 
 
 def tela_admin():
-    """Tela inicial do usuário nível administrador."""
+    """Tela inicial do usuário com permissão de administrador."""
     print("== TELA DE ADMINISTRADOR ==")
     while True:
         opcoes = {

@@ -20,7 +20,7 @@ import getpass
 
 
 def login_informacao(usuario):
-    """ Tela de exibição de dados do usuário após o login."""
+    """Tela de exibição de dados do usuário após o login."""
     print('Login efetuado como: ')
     print('Nome: ', usuario.nome.upper())
     print('Permissão: ', usuario.permissao.upper())
@@ -32,7 +32,7 @@ def login_informacao(usuario):
 
 
 def tela_login():
-    """Tela de verificação do níveld o usuário."""
+    """Tela de verificação do nível do usuário."""
     print('== LOGIN ==')
     while True:
         nickname = input('> Usuário: ')

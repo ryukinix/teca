@@ -18,7 +18,7 @@ from mysql.connector.errors import DatabaseError
 
 
 def entrada_usuario_comum():
-    """Realiza a leitura dos campos da tabela usuario."""
+    """Realiza a leitura dos campos da tabela usuário."""
     matricula = check.entrada('> Digite sua matricula: ', check.matricula)
     nome = check.entrada('> Digite seu nome completo: ', check.nome)
     endereco = check.entrada('> Digite seu endereço: ', check.endereco)

@@ -24,10 +24,12 @@ def imprimir_consulta(sql, params=()):
 
 
 def view_livro_ano():
+    """Utiliza o método imprimir_consulta que busca no SQL a view."""
     imprimir_consulta('SELECT * FROM view_livro_ano')
 
 
 def view_livro_categoria():
+    """Recebe a views de livro por consulta e pergunta para filtrar por categoria."""
     sql = 'SELECT * FROM view_livro_categoria'
     ask = input('Deseja filtrar por categoria? (y/N) ')
     params = ()
@@ -42,6 +44,7 @@ def view_livro_categoria():
 
 
 def view_livro_editora():
+    """Recebe a views da SQL de livro por editora e pergunta para filtar por editora."""
     sql = 'SELECT * FROM view_livro_editora'
     ask = input('Deseja filtrar por editora? (y/N) ')
     params = ()
@@ -56,6 +59,7 @@ def view_livro_editora():
 
 
 def view_professor_curso():
+    """Lista o professor por curso e pergunta para filtar por curso."""
     sql = 'SELECT * FROM view_professor_curso'
     ask = input('Deseja filtrar por curso? (y/N) ')
     params = ()
@@ -73,6 +77,11 @@ def view_professor_curso():
 
 
 def view_reserva_livro():
+    """Lista a reserva por livro, com nome de usuários e reservas.
+
+    É possível optar para filtar por livro. Do contrário todas as reservas
+    serão exibidas.
+    """
     sql = 'SELECT * FROM view_reserva_livro'
     ask = input('Deseja filtrar por livro? (y/N) ')
     params = ()
@@ -91,10 +100,12 @@ def view_reserva_livro():
 
 
 def view_livro_autores():
+    """Utiliza o método imprimir_consulta que busca no MySQL a view."""
     imprimir_consulta('SELECT * FROM view_livro_autores')
 
 
 def tela_views():
+    """Realiza a listagem das views."""
     print("== VIEWS ==")
     while True:
         opcoes = {

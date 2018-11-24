@@ -2,6 +2,8 @@
 # coding=utf-8
 #
 
+""" Declaração de pacotes em python.
+"""
 
 from setuptools import setup, find_packages
 import teca
@@ -20,14 +22,14 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    # Pegas as strings a partir de http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='teca databases library',
     author=teca.__author__,
     author_email=teca.__email__,
     packages=find_packages(exclude=['ez_setup', 'examples',
                                     'tests', 'docs', '__pycache__']),
     install_requires=install_requires,
-    entry_points={  # no entry-points yet
+    entry_points={
         'console_scripts': [
             'teca = teca.main:main'
         ]

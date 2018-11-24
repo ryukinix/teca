@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+"""Módulo responsavel para a tela do usuároi nivel administrdor.
+
+Utiliza as bilbiotecas criadas pela equipe para exibir os livros,
+ver reservas, ver empréstimos bem como outras opções exigidas pelo
+professor no arquivo do trabalho disponibilizado.
+"""
+
 from teca import term
 from teca import database
 from teca import check
@@ -13,6 +20,10 @@ from teca import usuario
 
 
 def imprimir_usuario(u):
+    """Lê e imprime as informações de usuário.
+
+    Como por exemplo: empréstimos, reservas e dados cadastrais.
+    """
     u.senha_hash = '*' * 8
     emps = u.emprestimos
     resv = u.reservas
@@ -41,6 +52,7 @@ def imprimir_usuario(u):
 
 
 def imprimir_livro(livro):
+    """Imprime informações do livro além de informações de sua disponibilidade."""
     print("== INFORMAÇÃO DO LIVRO")
     emprestimos = livro.emprestimos
     reservas = livro.reservas
@@ -64,6 +76,7 @@ def imprimir_livro(livro):
 
 
 def consultar_usuarios():
+    """Consulta se a entrada possui informações úteis para pesquisa."""
     u = selecionar_usuario()
     if u:
         imprimir_usuario(u)
@@ -72,15 +85,18 @@ def consultar_usuarios():
 
 
 def consultar_livros():
+    """Consulta as informações detalhadas de um determinado livro."""
     livro = selecionar_livro()
     imprimir_livro(livro)
 
 
 def consultar_reservas():
+    """Consulta de reservas feitas de um ou mais livros."""
     views.view_reserva_livro()
 
 
 def consultar_emprestimos():
+    """Consulta os empréstimos realizados até o momento."""
     sql = ('SELECT titulo, nome as nome_usuario, data_de_emprestimo, data_de_devolucao '
            'FROM emprestimo '
            'NATURAL JOIN livro '
@@ -90,6 +106,7 @@ def consultar_emprestimos():
 
 
 def realizar_emprestimo():
+    """Realiza o empréstimo obedecendo os privilégios dados aos tipos de usuários."""
     print("Escolha um usuário!")
     usuario = selecionar_usuario()
     livro = selecionar_livro()
@@ -117,12 +134,14 @@ def realizar_emprestimo():
 
 
 def realizar_reserva():
+    """Escolhe um usuário e realiza reserva de um determinado livro."""
     print("Escolha um usuário!")
     u = selecionar_usuario()
     usuario.realizar_reserva(u)
 
 
 def dar_baixa_emprestimo():
+    """Lista os empréstimos de um usuário e realiza a baixa de um em específico."""
     print("Escolha um usuário!")
     u = selecionar_usuario()
     emps = u.emprestimos
@@ -141,6 +160,7 @@ def dar_baixa_emprestimo():
 
 
 def fila_anda():
+    """Método para o mecanismo da fila andar."""
     conn = database.Database.connect()
     sql = ("DELETE FROM reserva "
            "WHERE data_contemplado is not null")
@@ -161,6 +181,7 @@ def fila_anda():
 
 
 def tela_bibliotecario():
+    """Primeira tela após o login de usuário bibliotecário."""
     print("== TELA DE BIBLIOTECÁRIO ==")
     while True:
         opcoes = {

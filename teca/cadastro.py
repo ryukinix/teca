@@ -18,7 +18,7 @@ from mysql.connector.errors import DatabaseError
 
 
 def entrada_usuario_comum():
-    """Realiza a leitura dos campos da tabela usuario."""
+    """Realiza a leitura dos campos da tabela usuário."""
     matricula = check.entrada('> Digite sua matricula: ', check.matricula)
     nome = check.entrada('> Digite seu nome completo: ', check.nome)
     endereco = check.entrada('> Digite seu endereço: ', check.endereco)
@@ -149,7 +149,7 @@ def tela_cadastro_usuario():
                 print('USUÁRIO CADASTRADO COM SUCESSO!')
                 break
             except DatabaseError:
-                print("Data de conclusão prevista maior que a data atual.")
+                print("Data de conclusão prevista menor que a data atual.")
                 ask = input("Tentar novamente? (Y/N)")
                 if ask.lower() == 'y':
                     print('> Em que data você vai concluir seu curso? (YYYY-MM-DD)')

@@ -1,13 +1,22 @@
 # coding: utf-8
-from teca.term import selecionar_livro
-from teca.term import imprimir_livros
+
+"""Módulo responsável pela tela de nível de usuário pelo terminal.
+
+Utiliza a interface datetime para ler o data do momento. Além disso,
+a tabulate para gerar a formatação das tabelas parecidas com as consultas
+SQL, como também importações de módulos criados pela nossa equipe.
+"""
+
 from teca import database
 from teca import term
 from datetime import datetime
 from tabulate import tabulate
+from teca.term import selecionar_livro
+from teca.term import imprimir_livros
 
 
 def consultar_livros():
+    """Listas as pesquisas possiveis para um livro."""
     opcoes = {
         '1': 'Pesquisar por editora',
         '2': 'Pesquisar por categoria',
@@ -52,6 +61,7 @@ def consultar_livros():
 
 
 def consultar_emprestimos(usuario):
+    """Mostra os empréstimos feitos por título,ISBN,data de empréstimo e devolução."""
     emprestimos = usuario.emprestimos
     print("== EMPRESTIMOS")
     for e in emprestimos:
@@ -67,6 +77,7 @@ def consultar_emprestimos(usuario):
 
 
 def consultar_reservas(usuario):
+    """Faz a consulta por meio de listagem."""
     reservas = usuario.reservas
     print("== RESERVAS")
     for e in reservas:
@@ -81,6 +92,7 @@ def consultar_reservas(usuario):
 
 
 def realizar_reserva(usuario):
+    """Realiza a reserva, gera a data feita a reserva, a contemplada e verifica a disponibilidade do livro."""
     livro = selecionar_livro()
     now = datetime.now()
     ok = None
@@ -96,6 +108,7 @@ def realizar_reserva(usuario):
 
 
 def excluir_cadastro(usuario):
+    """Realiza a exclusão do usuário caso ele não tenha nenhum empréstimo."""
     if len(usuario.emprestimos) == 0:
         ok = usuario.delete()
         if ok:
@@ -107,6 +120,7 @@ def excluir_cadastro(usuario):
 
 
 def tela_usuario(mat):
+    """Tela inicial após o login do nível usuário comum."""
     print("== TELA DE USUÁRIO ==")
     while True:
         usuario = database.Usuario.select(mat)

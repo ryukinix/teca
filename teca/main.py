@@ -20,6 +20,7 @@ import getpass
 
 
 def login_informacao(usuario):
+    """ Tela de exibição de dados do usuário após o login."""
     print('Login efetuado como: ')
     print('Nome: ', usuario.nome.upper())
     print('Permissão: ', usuario.permissao.upper())
@@ -31,6 +32,7 @@ def login_informacao(usuario):
 
 
 def tela_login():
+    """Tela de verificação do níveld o usuário."""
     print('== LOGIN ==')
     while True:
         nickname = input('> Usuário: ')
@@ -50,6 +52,7 @@ def tela_login():
 
 
 def main():
+    """Tela inicial do sistema."""
     # ------------LOGIN INICIAL-----------------
     status = database.Database.try_connect()
     if not status:

@@ -24,10 +24,12 @@ def imprimir_consulta(sql, params=()):
 
 
 def view_livro_ano():
+    """Utiliza o método imprimir_consulta que busca no SQL a view."""
     imprimir_consulta('SELECT * FROM view_livro_ano')
 
 
 def view_livro_categoria():
+    """Recebe a views de livro por consulta e pergunta opta por filtra por categoria."""
     sql = 'SELECT * FROM view_livro_categoria'
     ask = input('Deseja filtrar por categoria? (y/N) ')
     params = ()
@@ -42,6 +44,7 @@ def view_livro_categoria():
 
 
 def view_livro_editora():
+    """Recebe a views da SQL de livro por editora e opta por filtar por editora."""
     sql = 'SELECT * FROM view_livro_editora'
     ask = input('Deseja filtrar por editora? (y/N) ')
     params = ()
@@ -56,6 +59,7 @@ def view_livro_editora():
 
 
 def view_professor_curso():
+    """Recebe a views da SQL de professor por curso e opta por filtar por curso."""
     sql = 'SELECT * FROM view_professor_curso'
     ask = input('Deseja filtrar por curso? (y/N) ')
     params = ()
@@ -73,6 +77,7 @@ def view_professor_curso():
 
 
 def view_reserva_livro():
+    """Recebe a views da SQL de reserva por livro e opta por filtar por livro."""
     sql = 'SELECT * FROM view_reserva_livro'
     ask = input('Deseja filtrar por livro? (y/N) ')
     params = ()
@@ -91,10 +96,12 @@ def view_reserva_livro():
 
 
 def view_livro_autores():
+    """Utiliza o método livro_consulta que busca no SQL a view."""
     imprimir_consulta('SELECT * FROM view_livro_autores')
 
 
 def tela_views():
+    """Realiza a listagem das views."""
     print("== VIEWS ==")
     while True:
         opcoes = {

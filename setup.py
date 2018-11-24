@@ -2,6 +2,8 @@
 # coding=utf-8
 #
 
+""" Declaração de pacotes em python.
+"""
 
 from setuptools import setup, find_packages
 import teca
@@ -27,7 +29,7 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples',
                                     'tests', 'docs', '__pycache__']),
     install_requires=install_requires,
-    entry_points={  # Sem pontos de entrada, ainda
+    entry_points={
         'console_scripts': [
             'teca = teca.main:main'
         ]

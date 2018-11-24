@@ -15,6 +15,7 @@ from mysql.connector.errors import DatabaseError
 
 
 def admin_ler_entrada(atributo):
+    """Realiza a leitura e a checagem dos campos."""
     if atributo == 'senha_hash':
         valor = database.senha_hash(getpass.getpass(prompt="senha: "))
     elif 'data' in atributo:
@@ -34,6 +35,7 @@ def admin_ler_entrada(atributo):
 
 
 def escolher_tabela(t):
+    """Enumera e lista dos nomes das tabelas para servir como opção."""
     print("Escolha uma das tabelas: ")
     tabelas = {str(idx+1): tabela
                for idx, tabela in enumerate(t)}
@@ -43,6 +45,7 @@ def escolher_tabela(t):
 
 
 def escolher_tupla(tabela):
+    """Escolhe uma tupla com base na chave primária da tabela escolhida."""
     term.imprimir_tabela(tabela)
     print("Escolha a tupla: ")
     chave = []
@@ -56,6 +59,7 @@ def escolher_tupla(tabela):
 
 
 def admin_inserir():
+    """Inseri campos para um novo usário, podendo ser tipos diferentes."""
     print("== INSERIR")
     tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     atributos = []
@@ -106,6 +110,7 @@ def admin_inserir():
 
 
 def admin_alterar():
+    """Altera tuplas escolhendo pela chave primária."""
     print("== ALTERAR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
     colunas = tabela_escolhida._columns
@@ -129,6 +134,7 @@ def admin_alterar():
 
 
 def admin_remover():
+    """Deleta uma tupla escolhida usando listagem do módulo database.py."""
     print("== REMOVER")
     tabela_escolhida = escolher_tabela(database.tabelas_sem_isa)
     instancia = escolher_tupla(tabela_escolhida)
@@ -143,12 +149,14 @@ def admin_remover():
 
 
 def admin_imprimir():
+    """Imprimi a tabela escolhida usando listagem do módulo database.py."""
     print("== IMPRIMIR")
     tabela_escolhida = escolher_tabela(database.tabelas_todas)
     term.imprimir_tabela(tabela_escolhida)
 
 
 def tela_admin():
+    """Tela inicial do usuário nível administrador."""
     print("== TELA DE ADMINISTRADOR ==")
     while True:
         opcoes = {

@@ -3,7 +3,7 @@
 
 """Módulo para operações comuns de entrada/saída no terminal.
 
-Utiliza a biblioteca de formatação de tabelas, a tabulate além da 
+Utiliza a biblioteca de formatação de tabelas, a tabulate além da
 interface de comunicação de banco de dados, a database.py.
 """
 
@@ -12,18 +12,22 @@ from teca import database
 
 
 def sumario_emprestimo(e):
+    """Exibi os empréstimos feito no sistema."""
     return f'{e.isbn} / {e.livro.titulo} / {e.data_de_emprestimo}'
 
 
 def sumario_reserva(r):
+    """Exibe as reservas feitas no sistema."""
     return f'{r.isbn} / {r.livro.titulo} / {r.data_de_reserva}'
 
 
 def sumario_livro(l):
+    """Exibe os livros disponibilizado na biblioteca."""
     return f'{l.isbn} / {l.titulo} / {l.editora} / {l.ano} / {l.categoria}'
 
 
 def sumario_usuario(u):
+    """Exibe apenas o usuário e sua matricula. """
     return f'{u.matricula} / {u.nome}'
 
 
@@ -53,12 +57,14 @@ def menu_enumeracao(opcoes):
 
 
 def imprimir_livros(livros):
+    """Realiza a listagem e impressão dos livros disponiveis."""
     rows = [list(l) + [l.disponiveis] for l in livros]
     headers = database.Livro._columns + ['disponíveis']
     print(tabulate(rows, headers, 'psql'))
 
 
 def selecionar_usuario():
+    """Seleciona um usuário por nome ou matrícula."""
     query = input("Pesquise por nome ou matrícula: ")
     usuarios = database.Usuario.search(query, ['nome'])
     if not usuarios:
@@ -74,6 +80,7 @@ def selecionar_usuario():
 
 
 def selecionar_livro():
+    """Realiza a seleção de um livro mostrado a partir de uma listagem."""
     query = input("Pesquise por isbn, título, editora, categoria ou ano: ")
     livros = database.Livro.search(query, ['titulo', 'editora',
                                            'ano', 'categoria'])
